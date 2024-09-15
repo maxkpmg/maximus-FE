@@ -53,7 +53,7 @@ export class TimeReportEditorComponent implements OnInit, AfterViewInit {
 
   async ngOnInit(): Promise<void> {
     try {
-      const response = await fetch('http://127.0.0.1:8000/get-users', {
+      const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-users', {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ onlyActiveUsers: true })
@@ -118,7 +118,7 @@ export class TimeReportEditorComponent implements OnInit, AfterViewInit {
       try {
         this.isLoading = true;
         this.isSaveError = false;
-        const response = await fetch('http://127.0.0.1:8000' + path, {
+        const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net' + path, {
           method: "POST",
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ time_report: data })

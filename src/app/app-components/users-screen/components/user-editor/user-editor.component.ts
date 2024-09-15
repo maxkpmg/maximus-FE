@@ -81,7 +81,7 @@ export class UserEditorComponent implements OnInit, AfterViewInit {
       const path = isNewUser ? '/create-user' : '/edit-user';
       try {
         this.isLoading = true;
-        const response = await fetch('http://127.0.0.1:8000' + path, {
+        const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net' + path, {
           method: "POST",
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user: data })

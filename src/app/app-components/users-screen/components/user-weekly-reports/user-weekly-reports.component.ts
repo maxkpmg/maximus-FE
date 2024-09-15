@@ -29,7 +29,7 @@ export class UserWeeklyReportsComponent implements OnInit, OnChanges {
 
   async ngOnInit(): Promise<void> {
     try {
-      const response = await fetch('http://127.0.0.1:8000/get-projects', {
+      const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-projects', {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ onlyActiveProjects: false })
@@ -58,7 +58,7 @@ export class UserWeeklyReportsComponent implements OnInit, OnChanges {
       this.isLoading = true;
       const startDate = new Date(Number(week.sunday.slice(6, 10)), Number(week.sunday.slice(3, 5)) - 1, Number(week.sunday.slice(0, 2)), 12).toISOString().split('T')[0];
       const endDate = new Date(Number(week.thursday.slice(6, 10)), Number(week.thursday.slice(3, 5)) - 1, Number(week.thursday.slice(0, 2)), 12).toISOString().split('T')[0];
-      const response = await fetch('http://127.0.0.1:8000/get-user-time-reports', {
+      const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-user-time-reports', {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: this.user.id, startDate: startDate, endDate: endDate })

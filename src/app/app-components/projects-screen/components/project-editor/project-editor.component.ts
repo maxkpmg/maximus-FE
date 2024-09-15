@@ -61,7 +61,7 @@ export class ProjectEditorComponent implements OnInit, AfterViewInit {
   }
 
   async getProjectUsers(): Promise<void> {
-    const response = await fetch('http://127.0.0.1:8000/get-project-users', {
+    const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-project-users', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ projectId: this.project.id })
@@ -74,7 +74,7 @@ export class ProjectEditorComponent implements OnInit, AfterViewInit {
   }
 
   async getUsers(): Promise<void> {
-    const response = await fetch('http://127.0.0.1:8000/get-users', {
+    const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-users', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ onlyActiveUsers: true })
@@ -152,7 +152,7 @@ export class ProjectEditorComponent implements OnInit, AfterViewInit {
     const isNewProject = this.project.id > -1 ? false : true;
     const path = isNewProject ? '/create-project' : '/edit-project';
     this.project.name = this.name.charAt(0).toUpperCase() + this.name.slice(1);
-    const response = await fetch('http://127.0.0.1:8000' + path, {
+    const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net' + path, {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ project: this.project })
@@ -165,7 +165,7 @@ export class ProjectEditorComponent implements OnInit, AfterViewInit {
   }
 
   async saveProjectUsers(): Promise<void> {
-    await fetch('http://127.0.0.1:8000/add-project-users', {
+    await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/add-project-users', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ project_id: this.project.id, users: this.usersToSave })
@@ -173,7 +173,7 @@ export class ProjectEditorComponent implements OnInit, AfterViewInit {
   }
 
   async deleteProjectUsers(): Promise<void> {
-    await fetch('http://127.0.0.1:8000/delete-project-users', {
+    await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/delete-project-users', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ project_id: this.project.id, users: this.usersToDelete })

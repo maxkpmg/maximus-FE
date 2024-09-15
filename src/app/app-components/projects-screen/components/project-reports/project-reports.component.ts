@@ -24,7 +24,7 @@ export class ProjectReportsComponent implements OnChanges {
       try {
         this.isError = false;
         this.isLoading = true;
-        const response = await fetch('http://127.0.0.1:8000/get-project-time-reports', {
+        const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-project-time-reports', {
           method: "POST",
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ project_id: this.project.id })

@@ -36,7 +36,7 @@ export class UsersSidebarComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     try {
-      const response = await fetch('http://127.0.0.1:8000/get-users', {
+      const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-users', {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ onlyActiveUsers: false })

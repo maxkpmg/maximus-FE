@@ -90,7 +90,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
   }
 
   async getBookmarkedProjects(): Promise<void> {
-    const response = await fetch('http://127.0.0.1:8000/get-bookmarked-projects', {
+    const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-bookmarked-projects', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: this.user.id })
@@ -100,7 +100,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
   }
 
   async getProjectsById(ids: number[]): Promise<void> {
-    const response = await fetch('http://127.0.0.1:8000/get-projects-by-ids', {
+    const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-projects-by-ids', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ids: ids })
@@ -114,7 +114,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
   async getProjects(): Promise<void> {
     if (!this.projectsFetched) {
       this.isProjectsListLoading = true;
-      const response = await fetch('http://127.0.0.1:8000/get-projects', {
+      const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-projects', {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ onlyActiveProjects: true })
@@ -161,7 +161,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
         }
       }
       try {
-        const response = await fetch('http://127.0.0.1:8000/create-multiple-time-reports', {
+        const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/create-multiple-time-reports', {
           method: "POST",
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ time_reports: reportsToInsert })
