@@ -1,0 +1,101 @@
+<div [@openClose]="state">
+	<button class="background" (click)="closeAction()"></button>
+	<div class="container">
+		<div class="header">
+			<h2>{{data.day}} {{data.date}}</h2>
+			<div class="totalReportedHours">Total time: {{totalTime}}</div>
+		</div>
+		@if (!isLoading) {
+		<div class="projectsSection">
+			@for (project of bookmarkedProjects; track project; let i = $index) {
+			<div class="project">
+				<div class="input-group input-group-sm mb-3" style="width: 15%">
+					<div class="input-group-prepend" style="width: 100%">
+						<span class="input-group-text" style="border-radius: 3px">{{project.name}}</span>
+					</div>
+				</div>
+
+				<button type="button" class="btn btn-light plus-minus-btn" style="margin-left: 2%"
+					(click)="onPlusButtonClick(i)">+</button>
+
+				<div class="input-group input-group-sm mb-3" style="width: 15%; margin-left: 2%;">
+					<div class="input-group-prepend" style="width: 70%">
+						<span class="input-group-text">Hours</span>
+					</div>
+					<input #h [(ngModel)]="projectsModel[i].hours" type="number" class="form-control" maxlength="2" [id]="'hours' + i"
+						style="width: 30%" (input)="onInput($event, i, true)">
+				</div>
+
+				<div class="input-group input-group-sm mb-3" style="width: 15%; margin-left: 2%;">
+					<div class="input-group-prepend" style="width: 70%">
+						<span class="input-group-text">Minutes</span>
+					</div>
+					<input #m [(ngModel)]="projectsModel[i].minutes" type="number" class="form-control" maxlength="2" [id]="'minutes' + i"
+						style="width: 30%" (input)="onInput($event, i, false)">
+				</div>
+
+				<button type="button" class="btn btn-light plus-minus-btn" style="margin-left: 2%"
+					(click)="onMinusButtonClick(i)">-</button>
+
+				<div class="input-group input-group-sm mb-3" style="width: 36%; margin-left: 2%;">
+					<div class="input-group-prepend" style="width: 40%">
+						<span class="input-group-text">Description</span>
+					</div>
+					<input #d [(ngModel)]="projectsModel[i].description" type="text" class="form-control" style="width: 60%" [id]="'description' + i">
+				</div>
+			</div>
+			}
+		</div>
+
+		<h3>More projects:</h3>
+		<div class="dropdown">
+			<button type="button" class="btn btn-light projects-btn" data-bs-toggle="dropdown" aria-expanded="false"
+				data-bs-reference="parent" (click)="getProjects()">
+				<div>Projects list...</div>
+				<img src="../../../assets/expand-dark.png" />
+			</button>
+			<ul class="dropdown-menu dropdown-scroll">
+				@if (isProjectsListLoading) {
+				<div class="projects-list-loading">
+					@if (isProjectsListError){
+					Error retrieving data
+					<div><img class="projects-list-error-img" src="../../../assets/error-red.png" /></div>
+					}
+					@if (!isProjectsListError){
+					<LoadingSpinnerComponent />}
+				</div>
+				}
+				@if (!isProjectsListLoading) {
+				<input class="form-control me-2" type="search" id="search" placeholder="Search project" aria-label="Search" (keyup)="filterProjects($event)">
+				@for (project of filteredProjects; track project; let i = $index) {
+				<button id="dropdown-item" class="dropdown-item" style="border: 0" type="button"
+					(click)="onOtherProjectSelected(project)">{{project.name}}</button>
+				}
+				}
+			</ul>
+		</div>
+
+		<div>
+			@if (!descriptionValid) {<div class="validation">Description is mandatory</div>}
+			@if (!timeValid) {<div class="validation">Illegal time report</div>}
+			@if (!maxTimeValid) {<div class="validation">Maximum daily time report allowed is 16 hours</div>}
+			@if (isError) {<div class="validation">Server error, couldn't save report</div>}
+		</div>
+
+		<div class="input-group-sm mb-3 buttons-group">
+			<button type="submit" class="btn btn-success" style="width: 20%" (click)="saveAction()">Save</button>
+			<button type="button" class="btn btn-danger" style="width: 20%" (click)="closeAction()">Cancel</button>
+		</div>
+		}
+		@if (isLoading) {
+		<div class="loading">
+			@if (isError){
+			Error retrieving data
+			<div><img class="error-img" src="../../../assets/error-red.png" /></div>
+			}
+			@if (!isError){
+			<LoadingSpinnerComponent />}
+		</div>
+		}
+	</div>
+</div>

@@ -1,0 +1,53 @@
+<div [@openClose]="state" style="z-index: 999;">
+	<button class="background" (click)="closeAction()"></button>
+	<div class="container">
+
+		<div class="input-group input-group-sm mb-3">
+			<div class="input-group-prepend" style="width: 28%">
+				<span class="input-group-text">First Name</span>
+			</div>
+			<input #fn [(ngModel)]="fname" class="form-control" type="text" maxlength="12">
+		</div>
+
+		<div class="input-group input-group-sm mb-3">
+			<div class="input-group-prepend" style="width: 28%">
+				<span class="input-group-text">Last Name</span>
+			</div>
+			<input #ln [(ngModel)]="lname" class="form-control" type="text" maxlength="20">
+		</div>
+
+		<div class="input-group input-group-sm mb-3">
+			<div class="input-group-prepend" style="width: 28%">
+				<span class="input-group-text">Phone</span>
+			</div>
+			<input #p [(ngModel)]="phone" class="form-control" type="text" maxlength="10">
+		</div>
+
+		<div class="input-group input-group-sm mb-3">
+			<div class="input-group-prepend" style="width: 28%">
+				<span class="input-group-text">Email</span>
+			</div>
+			<input #e [(ngModel)]="email" class="form-control" type="text" maxlength="30">
+		</div>
+
+		<div class="validationsContainer">
+			@if (!existValid) {<div class="validation">User with this email address already exists</div>}
+			@if (!fnameValid) {<div class="validation">First name should consist of letters</div>}
+			@if (!lnameValid) {<div class="validation">Last name should consist of letters</div>}
+			@if (!phoneValid) {<div class="validation">Illegal phone number</div>}
+			@if (!emailValid) {<div class="validation">Illegal email address</div>}
+			@if (serverError) {<div class="validation">Server error, failed to save</div>}
+		</div>
+
+		<div class="input-group-sm mb-3 buttons-group">
+			<button type="button" class="btn btn-success" style="width: 35%" (click)="saveAction()">Save</button>
+			<button type="button" class="btn btn-danger" style="width: 35%" (click)="closeAction()">Cancel</button>
+		</div>
+
+		@if (isLoading) {
+			<div class="loading">
+				<LoadingSpinnerComponent />
+			</div>
+			}
+	</div>
+</div>

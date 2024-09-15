@@ -1,0 +1,88 @@
+.container {
+  display: flex;
+  height: 7vh;
+  width: 100%;
+  border-radius: 20px;
+  align-items: center;
+  margin-bottom: 2vh;
+  padding-left: 15px;
+  padding-right: 15px;
+  background-color: white;
+  box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.4);
+}
+
+.project-title {
+  font-size: 26px;
+  font-weight: bold;
+  color: #4D4DFF;
+}
+
+.total-time-reported {
+  font-size: 22px;
+  font-weight: bold;
+  width: 20%;
+  text-align: center;
+}
+
+.new-time-report-button-container {
+  display: flex;
+  justify-content: end;
+  width: 40%;
+}
+
+.project-container {
+  white-space: nowrap;
+  display: flex;
+  justify-content: start;
+  width: 40%;
+}
+
+.options-opener-button {
+  height: 5vh;
+  width: 5vh;
+  border-radius: 2.5vh;
+  border: 0;
+  margin-right: 5px;
+  justify-content: center;
+  background-color: white;
+}
+
+.options-opener-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.options-opener-button img {
+  height: 3vh;
+  width: 3vh;
+}
+
+.dd-menu {
+  padding: 2px;
+  box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.4);
+}
+
+.white-button {
+  background-color: white;
+  color: #343434;
+  font-weight: 600;
+  border-radius: 5px;
+}
+
+.white-button:hover {
+  background-color: ghostwhite
+}
+
+.white-button:active {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.red-button {
+  background-color: red;
+  color: white;
+  font-weight: 600;
+  border-radius: 5px;
+}
+
+.red-button:hover {
+  background-color: rgba(200, 0, 0);
+}

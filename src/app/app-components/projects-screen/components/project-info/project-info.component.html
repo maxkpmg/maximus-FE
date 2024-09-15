@@ -1,0 +1,25 @@
+<div class="container">
+	@if (project.name) {
+	<div class="project-container">
+		<div class="dropdown">
+			<button class="options-opener-button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+				<img src="../../../assets/3 dots dark.png" />
+			</button>
+			<div class="dropdown-menu dd-menu">
+				<button class="dropdown-item white-button" type="button" (click)="onEditProject()">Edit project</button>
+				@if (project.active) {<button class="dropdown-item red-button" type="button" (click)="onArchive()">Archive project</button>}
+				@if (!project.active) {<button class="dropdown-item red-button" type="button" (click)="onReactivate()">Reactivate project</button>}
+			</div>
+		</div>
+		<div class="project-title">{{project.name}}</div>
+	</div>
+
+	<div class="total-time-reported">Total: {{hours}}H {{minutes}}M</div>
+
+	<!-- <div class="new-time-report-button-container">
+		<button type="button" class="btn btn-success" (click)="onNewTimeReport()" [disabled]="!project.active">
+			Add new time report
+		</button>
+	</div> -->
+	}
+</div>

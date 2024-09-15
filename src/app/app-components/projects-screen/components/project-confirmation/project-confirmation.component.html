@@ -1,0 +1,18 @@
+<div [@openClose]="state">
+	<button class="background" (click)="closeAction()"></button>
+	<div class="container">
+		<h1>{{msg}}</h1>
+
+		@if (isError) {<div class="validation">Server error, failed to {{action.type}}</div>}
+
+		<div class="input-group-sm mb-3 buttons-group">
+			<button type="button" class="btn btn-secondary" style="width: 35%" (click)="closeAction()">cancel</button>
+			<button type="button" class="btn btn-danger" style="width: 35%" (click)="confirmAction()">{{confirmText}}</button>
+		</div>
+	</div>
+	@if (isLoading) {
+	<div class="loading">
+		<LoadingSpinnerComponent />
+	</div>
+	}
+</div>

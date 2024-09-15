@@ -1,0 +1,167 @@
+.background {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.container {
+  height: 70vh;
+  width: 35vw;
+  background-color: white;
+  padding: 1vw;
+  font-size: 2vh;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+  box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.4);
+}
+
+input {
+  font-size: 2vh;
+  border-radius: 3px;
+  margin-bottom: 2vh;
+}
+
+h3 {
+  font-size: 2vh;
+  font-weight: bold;
+}
+
+.buttons-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+  height: 5vh;
+}
+
+.validation {
+  height: 3vh;
+  width: 100%;
+  color: red;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+
+.invalid {
+  border: 1px solid red;
+}
+
+.loading {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding-top: 47vh;
+  text-align: center;
+}
+
+.project-users-container {
+  width: 100%;
+  height: 33vh;
+  border: 1px solid #dee2e6;
+  border-radius: 3px;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding-top: 0;
+  margin-bottom: 2vh;
+}
+
+.project-user {
+  width: 100%;
+  height: 5vh;
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  align-items: center;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.user-name {
+  width: calc(50% - 2.5vh);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.user-email {
+  width: calc(50% - 2.5vh);
+  text-align: right;
+  white-space: nowrap;
+  padding-right: 0.5vw;
+}
+
+.delete-user {
+  display: flex;
+  height: 5vh;
+  width: 5vh;
+  justify-content: center;
+  align-items: center;
+  border: 0;
+}
+
+.delete-user button {
+  display: none;
+  height: 80%;
+  width: 80%;
+  border-radius: 5px;
+}
+
+.project-user:hover button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-user button img {
+  height: 3vh;
+  width: 3vh;
+}
+
+.project-user:hover {
+  background-color: ghostwhite;
+}
+
+.project-users-container::-webkit-scrollbar {
+  display: none;
+}
+
+.dropdown-scroll {
+  height: 12vh;
+  width: 100%;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding-bottom: 2vh;
+  padding-top: 0;
+  box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.4);
+}
+
+.dropdown {
+  width: 100%;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+}
+
+.projects-btn {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.projects-btn div {
+  width: calc(100% - 3vh);
+  text-align: start;
+}
+
+.projects-btn img {
+  height: 3vh;
+  width: 3vh;
+}

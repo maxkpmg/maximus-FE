@@ -1,0 +1,47 @@
+<div class="container">
+	@if (!isLoading && timeReports.length) {
+	<table class="table table-sm">
+		<tr>
+			<th scope="col" style="width:18%">Date</th>
+			<th scope="col" style="width:18%">Name</th>
+			<th scope="col" style="width:18%">Work Time</th>
+			<th scope="col" style="width:36%">Description</th>
+			<th scope="col" style="width:10%"></th>
+		</tr>
+		@for (timeReport of timeReports; track timeReport; let i = $index) {
+		<tr>
+			<td>{{timeReport.date}}</td>
+			<td>{{timeReport.fname}} {{timeReport.lname}}</td>
+			<td>{{timeReport.hours}}h {{timeReport.minutes}}m</td>
+			<td style="overflow-wrap: anywhere">{{timeReport.description}}</td>
+			<td>
+				@if (project.active) {
+				<div class="button-column">
+					<button type="button" class="btn btn-primary edit-button" (click)="onEdit(timeReport)">EDIT</button>
+					<button type="button" class="btn btn-danger delete-button" (click)="onDelete(timeReport.id)">
+						<div class="delete-img"></div>
+					</button>
+				</div>
+				}
+			</td>
+		</tr>
+		}
+	</table>
+	}
+	@if (!isLoading && !timeReports.length) {
+	<div class="no-reports">
+		No reports yet :)
+		<div><img class="no-reports-img" src="../../../assets/note.png" /></div>
+	</div>
+	}
+	<div class="table-gradient"></div>
+	@if (isLoading) {
+	<div class="no-reports">
+		@if (isError){
+		Error retrieving data
+		<div><img class="no-reports-img" src="../../../assets/error.png" /></div>
+		}
+		@if (!isError){<LoadingSpinnerComponent />}
+	</div>
+	}
+</div>

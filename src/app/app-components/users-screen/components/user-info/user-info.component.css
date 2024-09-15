@@ -1,0 +1,136 @@
+.container {
+  display: flex;
+  height: 7vh;
+  width: 100%;
+  border-radius: 20px;
+  align-items: center;
+  margin-bottom: 2vh;
+  padding-left: 15px;
+  padding-right: 15px;
+  background-color: white;
+  font-size: 2vh;
+  font-weight: bold;
+  box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.4);
+}
+
+.name-container {
+  display: flex;
+  justify-content: start;
+  width: 30%;
+}
+
+.navigationContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 40%;
+  height: 100%;
+  text-align: center;
+}
+
+.detailsContainer {
+  font-weight: bold;
+  width: 30%;
+}
+
+.detailsContainer a,
+.detailsContainer p {
+  display: block;
+  margin: 0;
+  height: 50%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.options-opener-button {
+  height: 5vh;
+  width: 5vh;
+  border-radius: 2.5vh;
+  border: 0;
+  margin-right: 5px;
+  justify-content: center;
+  background-color: white;
+}
+
+.options-opener-button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.options-opener-button img {
+  height: 3vh;
+  width: 3vh;
+}
+
+.dd-menu {
+  padding: 2px;
+  box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.4);
+}
+
+.white-button {
+  background-color: white;
+  color: #343434;
+  font-weight: 600;
+  border-radius: 5px;
+}
+
+.white-button:hover {
+  background-color: ghostwhite
+}
+
+.white-button:active {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.red-button {
+  background-color: red;
+  color: white;
+  font-weight: 600;
+  border-radius: 5px;
+}
+
+.red-button:hover {
+  background-color: rgba(200, 0, 0);
+}
+
+.user-name {
+  font-size: 3vh;
+  font-weight: bold;
+  color: #4D4DFF;
+  white-space: nowrap;
+}
+
+.navigationContainer button {
+  display: flex;
+  justify-content: center;
+  height: 80%;
+  width: 10%;
+  align-items: center;
+  background-color: white;
+}
+
+.left-button {
+  border-top-left-radius: 1.5vh;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 1.5vh;
+  border-bottom-right-radius: 0;
+}
+
+.right-button {
+  border-top-right-radius: 1.5vh;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 1.5vh;
+  border-bottom-left-radius: 0;
+}
+
+.navigationImg {
+  height: 4vh;
+  width: 4vh;
+}
+
+.dates {
+  width: 60%;
+  text-align: center;
+  justify-content: center;
+  white-space: nowrap;
+}

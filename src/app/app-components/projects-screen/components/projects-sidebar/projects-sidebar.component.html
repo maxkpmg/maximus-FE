@@ -1,0 +1,44 @@
+<div class="sidebar">
+	@if (!isLoading) {
+	<div class="options" [@openClose]="state">
+		<button class="options-opener-button" (click)="optionsController()">
+			@if (!isOptionsOpened){<img src="../../../assets/3 dots.png" />}
+			@if (isOptionsOpened){<img src="../../../assets/expand.png" />}
+		</button>
+		@if (isOptionsOpened) {
+		<button class="option" (click)="createNewProject()">Add new project</button>
+		}
+	</div>
+
+	<input class="form-control me-2" style="margin-top: 1vh; margin-bottom: 1vh;" type="search"
+		placeholder="Search project" aria-label="Search" (keyup)="filterProjects($event)">
+
+	<div (click)="onButtonGroupClick($event)">
+		@for (project of filteredActiveProjects; track project; let i = $index) {
+		<button (click)="onProjectSelect($event, project)" id={{project.name}}>{{project.name}}</button>
+		}
+
+		<a class="archive-opener-button" type="button" data-bs-toggle="collapse" data-bs-target="#archiveList"
+			(click)="archiveController()">
+			<div>Archived projects</div>
+			@if (!isArchiveOpened){<img src="../../../assets/expand.png" style="transform: rotate(180deg)" />}
+			@if (isArchiveOpened){<img src="../../../assets/expand.png" />}
+		</a>
+		<div class="collapse" id="archiveList">
+			@for (project of filteredArchivedProjects; track project; let i = $index) {
+			<button (click)="onProjectSelect($event, project)" id={{project.name}}>{{project.name}}</button>
+			}
+		</div>
+	</div>
+	}
+	@if (isLoading) {
+	<div class="loading">
+		@if (isError){
+		Error retrieving data
+		<div><img class="error-img" src="../../../assets/error.png" /></div>
+		}
+		@if (!isError){
+		<LoadingSpinnerComponent />}
+	</div>
+	}
+</div>

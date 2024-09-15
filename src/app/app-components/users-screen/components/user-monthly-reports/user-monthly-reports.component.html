@@ -1,0 +1,28 @@
+<div class="container">
+	@if (!isLoading && !isError && !isNoUserSelected) {
+	<p-calendar
+		[(ngModel)]="monthToDisplay"
+		[inline]="true"
+		dateFormat="dd/mm/yy"
+		[disabledDays]="[5,6]"
+		[maxDate]="today"
+		(onSelect)="onDayClick($event)"
+		(onMonthChange)="onMonthChange($event)"
+	/>
+	}
+	@if (isNoUserSelected) {
+	<div class="no-reports">
+		No user selected :)
+		<div><img class="no-reports-img" src="../../../../../assets/note.png" /></div>
+	</div>
+	}
+	@if (isLoading) {
+	<div class="no-reports">
+		@if (isError){
+		Error retrieving data
+		<div><img class="no-reports-img" src="../../../assets/error.png" /></div>
+		}
+		@if (!isError){<LoadingSpinnerComponent />}
+	</div>
+	}
+</div>

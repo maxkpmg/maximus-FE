@@ -1,0 +1,128 @@
+.container {
+  height: 80vh;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.4);
+  border-radius: 20px;
+  padding: 1vh;
+  padding-left: 1.5%;
+  padding-right: 1.5%;
+  overflow: scroll;
+  white-space: nowrap;
+  position: relative;
+}
+
+.container::-webkit-scrollbar {
+  display: none;
+}
+
+td {
+  height: 68vh;
+}
+
+th {
+  height: 7vh;
+  padding: 0.5vh;
+  justify-content: center;
+}
+
+.thBackground {
+  height: 6vh;
+  width: 66%;
+  margin-left: 16.5%;
+  padding: 0.5vh;
+  border-radius: 5px;
+  border: 0;
+  box-shadow: 0 0px 6px 0 rgba(0, 0, 0, 0.4);
+}
+
+.weekDay {
+  height: 50%;
+  width: 100%;
+  font-size: 1.8vh;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+}
+
+.weekDate {
+  height: 50%;
+  width: 100%;
+  font-size: 1.4vh;
+  font-weight: normal;
+  text-align: center;
+  color: rgb(255, 255, 255, 0.8)
+}
+
+.reportBlock {
+  width: 100%;
+  padding: 0.2vh;
+}
+
+.reportBlockContent {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+  overflow: scroll;
+  padding: 0.5vh;
+  border: 0;
+}
+
+.reportBlockContent::-webkit-scrollbar {
+  display: none;
+}
+
+.reportBlockContent span {
+  font-weight: 600;
+  font-size: 1.5vh;
+  color: #4D4DFF;
+  background-color: white;
+  border-radius: 3px;
+  margin-bottom: 2px;
+  padding-left: 2px;
+  padding-right: 2px
+}
+
+.no-reports {
+  width: 100%;
+  color: lightgrey;
+  font-size: 6vh;
+  font-weight: bold;
+  text-align: center;
+  justify-content: center;
+  margin-top: 15vh;
+}
+
+.no-reports-img {
+  margin-top: 3vh;
+  height: 15vh;
+  width: 15vh;
+}
+
+.nineHoursLine {
+  position: absolute;
+  top: 70.5vh;
+  width: 97.5%;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  z-index: 900;
+  padding: 0
+}
+
+.nineHoursLine .line {
+  border-bottom: 1px solid lightgrey;
+  width: 100%;
+  background-color: transparent;
+}
+
+.nineHoursLine .text {
+  color: lightgrey;
+  font-size: 1.5vh;
+  font-weight: bold;
+  padding: 0;
+  padding-left: 5px;
+}

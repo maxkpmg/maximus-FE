@@ -1,0 +1,36 @@
+<div class="container">
+	@if (user.fname) {
+	<div class="name-container">
+		<div class="dropdown">
+			<button class="options-opener-button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+				<img src="../../../assets/3 dots dark.png" />
+			</button>
+			<div class="dropdown-menu dd-menu">
+				<button class="dropdown-item white-button" type="button" (click)="onEditUser()">Edit user</button>
+				@if (user.active) {<button class="dropdown-item red-button" type="button" (click)="onArchive()">Archive user</button>}
+				@if (!user.active) {<button class="dropdown-item red-button" type="button" (click)="onReactivate()">Reactivate user</button>}
+			</div>
+		</div>
+		<div class="user-name">{{user.fname}} {{user.lname}}</div>
+	</div>
+
+	<div class="navigationContainer">
+		@if (isMonthlyOrWeeklyView) {
+		<button class="btn btn-light left-button" (click)="onNavigateWeeks(false)">
+			<img src="../../../../../assets/navigation-arrow.png" class="navigationImg" style="transform: rotate(180deg)" />
+		</button>
+		<div class="dates">
+			<div>{{currDisplayedDatesDisplayed}}</div>
+		</div>
+		<button class="btn btn-light right-button" (click)="onNavigateWeeks(true)">
+			<img src="../../../../../assets/navigation-arrow.png" class="navigationImg" />
+		</button>
+		}
+	</div>
+
+	<div class="detailsContainer">
+		<a [href]="'mailto:' + user.email">{{user.email}}</a>
+		<p>{{user.phone}}</p>
+	</div>
+	}
+</div>

@@ -1,0 +1,17 @@
+<div class="container">
+	<h2>View Type:</h2>
+	<div class="form-check" style="margin-bottom: 2vh">
+		<input [(ngModel)]="viewType" class="form-check-input" type="radio" id="monthly" value="monthly"
+			(change)="onRadioClick()">
+		<label class="form-check-label" for="monthly">
+			Monthly
+		</label>
+	</div>
+	<div class="form-check">
+		<input [(ngModel)]="viewType" class="form-check-input" type="radio" id="weekly" value="weekly"
+			(change)="onRadioClick()">
+		<label class="form-check-label" for="weekly">
+			Weekly
+		</label>
+	</div>
+</div>

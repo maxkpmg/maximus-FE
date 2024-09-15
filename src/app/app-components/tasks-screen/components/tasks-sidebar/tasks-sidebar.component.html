@@ -1,0 +1,22 @@
+<div class="sidebar">
+	@if (!isLoading) {
+	<input class="form-control me-2" style="margin-top: 1vh; margin-bottom: 1vh;" type="search"
+		placeholder="Search project" aria-label="Search" (keyup)="filterProjects($event)">
+
+	<div (click)="onButtonGroupClick($event)">
+		@for (project of filteredProjects; track project; let i = $index) {
+		<button (click)="onProjectSelect($event, project)" id={{project.name}}>{{project.name}}</button>
+		}
+	</div>
+	}
+	@if (isLoading) {
+	<div class="loading">
+		@if (isError){
+		Error retrieving data
+		<div><img class="error-img" src="../../../assets/error.png" /></div>
+		}
+		@if (!isError){
+		<LoadingSpinnerComponent />}
+	</div>
+	}
+</div>

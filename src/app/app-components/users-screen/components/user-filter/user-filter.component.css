@@ -1,0 +1,19 @@
+.container {
+  height: 80vh;
+  width: 15vw;
+  position: absolute;
+  top: 18vh;
+  right: 0;
+  padding: 3vh;
+  background-color: white;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.4);
+}
+
+h2 {
+  font-size: 2vh;
+  font-weight: bold;
+  margin-bottom: 2vh;
+  white-space: nowrap;
+}

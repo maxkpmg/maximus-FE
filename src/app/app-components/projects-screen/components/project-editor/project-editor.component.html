@@ -1,0 +1,50 @@
+<div [@openClose]="state">
+	<button class="background" (click)="closeAction()"></button>
+	<div class="container">
+
+		<h3 class="input-group-prepend">Project name:</h3>
+		<input #n [(ngModel)]="name" type="text" class="form-control" maxlength="25">
+
+		<h3 class="input-group-prepend">Assigned users:</h3>
+		<div class="project-users-container">
+			@for (user of projectUsersToDisplay; track user; let i = $index) {
+			<div class="project-user">
+				<div class="delete-user">
+					<button class="btn btn-danger" (click)="deleteProjectUser(user)">
+						<img src='../../../../../assets/delete.png' />
+					</button>
+				</div>
+				<div class="user-name">{{user.fname}} {{user.lname}}</div>
+				<div class="user-email">{{user.email}}</div>
+			</div>
+			}
+		</div>
+		
+		<h3>Assign user from list:</h3>
+		<div class="dropdown">
+			<button type="button" class="btn btn-light projects-btn" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
+				<div>Users list...</div>
+				<img src="../../../assets/expand-dark.png" />
+			</button>
+			<ul class="dropdown-menu dropdown-scroll">
+				@for (user of users; track user; let i = $index) {
+				<button id="dropdown-item" class="dropdown-item" style="border: 0" type="button"
+					(click)="addProjectUser(user)">{{user.fname}} {{user.lname}}</button>
+				}
+			</ul>
+		</div>
+
+		<div class="validation">{{error}}</div>
+
+		<div class="input-group-sm mb-3 buttons-group">
+			<button type="button" class="btn btn-success" style="width: 35%" (click)="saveAction()">Save</button>
+			<button type="button" class="btn btn-danger" style="width: 35%" (click)="closeAction()">Cancel</button>
+		</div>
+
+	</div>
+	@if (isLoading) {
+	<div class="loading">
+		<LoadingSpinnerComponent />
+	</div>
+	}
+</div>

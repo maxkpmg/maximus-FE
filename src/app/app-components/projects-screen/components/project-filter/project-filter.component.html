@@ -1,0 +1,53 @@
+<div class="container">
+	<h2>Filters</h2>
+
+	<div class="form-check" style="margin-bottom: 2vh">
+		<input [(ngModel)]="filterType" class="form-check-input" type="radio" id="monthDate" value="month" [disabled]="!reports.length">
+		<label class="form-check-label" for="monthDate">
+			Filter by month
+		</label>
+	</div>
+	@if (filterType === "month") {
+	<p-calendar [(ngModel)]="month" view="month" [maxDate]="today" dateFormat="mm/yy" [disabled]="!reports.length" />
+	}
+	@if (filterType !== "month") {
+	<input class="calendar-placeholder" disabled id="month-disabled">
+	}
+
+	<div class="divider"></div>
+
+	<div class="form-check" style="margin-bottom: 2vh">
+		<input [(ngModel)]="filterType" class="form-check-input" type="radio" id="customDates" value="custom" [disabled]="!reports.length">
+		<label class="form-check-label" for="customDates">
+			Filter by custom dates
+		</label>
+	</div>
+	@if (filterType !== "custom") {
+	<h3>From:</h3>
+	<input class="calendar-placeholder" disabled id="from-disabled">
+	<h3>To:</h3>
+	<input class="calendar-placeholder" disabled id="to-disabled">
+	}
+	@if (filterType === "custom") {
+	<h3>From:</h3>
+	<p-calendar [(ngModel)]="fromDate" [maxDate]="today" dateFormat="dd/mm/yy" [disabled]="!reports.length" />
+	<h3>To:</h3>
+	<p-calendar [(ngModel)]="toDate" [minDate]="fromDate" [maxDate]="today" dateFormat="dd/mm/yy" [disabled]="!reports.length" />
+	}
+	@if (validationMsg) {
+	<div class="validation">Illegal date range</div>
+	}
+
+	<div class="divider"></div>
+
+	<div class="button-container">
+		<button type="button" class="btn btn-primary" style="font-weight: bold" (click)="onFilter()" [disabled]="!reports.length || !this.filterType">FILTER</button>
+	</div>
+	<div class="button-container">
+		<button type="button" class="btn btn-secondary" (click)="onClear()" [disabled]="!reports.length || !this.filterType">Clear filters</button>
+	</div>
+	<div class="divider"></div>
+	<div class="button-container">
+		<button type="button" class="btn btn-success" (click)="onExport()" [disabled]="!reports.length">Export to Excel</button>
+	</div>
+</div>

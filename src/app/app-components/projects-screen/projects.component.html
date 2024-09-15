@@ -1,0 +1,30 @@
+<main>
+  <aside>
+    <ProjectsSidebarComponent #sb (projectSelect)="onProjectSelect($event)" (openNewProjectEditor)="displayProjectEditor()"
+      (getProjects)="initProjects($event)" />
+  </aside>
+
+  <div class="content">
+    <ProjectInfoComponent #pi [project]="selectedProject" [reports]="filteredTimeReports" (edit)="displayProjectEditor($event)"
+      (newTimeReport)="displayTimeReportEditor($event)" (archive)="displayConfirmation($event)" />
+
+    <ProjectReportsComponent [timeReports]="filteredTimeReports" [project]="selectedProject"
+      (delete)="displayConfirmation($event)" (edit)="displayTimeReportEditor($event)" (getReports)="initProjectReports($event)" />
+  </div>
+
+  <aside>
+    <ProjectFilterComponent [reports]="timeReports" [projectName]="selectedProject.name" (filter)="onFilter($event)"
+      (clear)="onClearFilters()" />
+  </aside>
+
+  @if (isTimeReportEditor) {
+  <TimeReportEditorComponent [timeReportToEdit]="timeReportToEdit" [projectId]="selectedProject.id"
+    (save)="saveTimeReport($event)" (close)="closeTimeReportEditor()" />
+  }
+  @if (isProjectEditor) {
+  <ProjectEditorComponent [project]="projectToEdit" [projects]="projects" (save)="saveProject($event)" (close)="closeProjectEditor()" />
+  }
+  @if (isConfirmation) {
+  <ProjectConfirmationComponent [action]="confirmationData" (confirm)="onConfirm()" (close)="closeConfirmation()" />
+  }
+</main>

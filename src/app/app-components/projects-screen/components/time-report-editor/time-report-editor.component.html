@@ -1,0 +1,74 @@
+<div [@openClose]="state">
+	<button class="background" (click)="closeAction()"></button>
+	<div class="container">
+		<div class="input-group input-group-sm mb-3">
+			<div class="input-group-prepend" style="width: 28%">
+				<span class="input-group-text">Date</span>
+			</div>
+			<p-calendar [(ngModel)]="date" [maxDate]="today" dateFormat="dd/mm/yy" [disabledDays]="[5, 6]"></p-calendar>
+		</div>
+
+		<div class="input-group input-group-sm mb-3">
+			<div class="input-group-prepend" style="width: 28%">
+				<span class="input-group-text">Name</span>
+			</div>
+			<div #n class="dropdown">
+				<button class="form-control user-name" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					{{fname}} {{lname}}
+					<div class="dropdownImg">
+						<img src="../../../assets/expand-dark.png" />
+					</div>
+				</button>
+				<div class="dropdown-menu dropdown-scroll">
+					@for (user of users; track user; let i = $index) {
+					<button id="dropdown-item" class="dropdown-item" style="border: 0" type="button"
+						(click)="onUserSelect(user)">{{user.fname}} {{user.lname}}</button>
+					}
+				</div>
+			</div>
+		</div>
+
+		<div class="work-time">
+			<div class="input-group input-group-sm mb-3" style="width: 49%">
+				<div class="input-group-prepend" style="width: 56%">
+					<span class="input-group-text">Hours</span>
+				</div>
+				<input #h [(ngModel)]="hours" type="number" class="form-control" maxlength="2"
+					(input)="onInput($event, true)">
+			</div>
+			<div class="input-group input-group-sm mb-3" style="width: 49%">
+				<div class="input-group-prepend" style="width: 56%">
+					<span class="input-group-text">Minutes</span>
+				</div>
+				<input #m [(ngModel)]="minutes" type="number" class="form-control" maxlength="2"
+					(input)="onInput($event, false)">
+			</div>
+		</div>
+
+		<div class="input-group input-group-sm mb-3">
+			<div class="input-group-prepend" style="width: 28%">
+				<span class="input-group-text">Description</span>
+			</div>
+			<input #d [(ngModel)]="description" class="form-control" type="text" maxlength="100">
+		</div>
+
+		<div class="validationsContainer">
+			@if (isSaveError) {<div class="validation">An error accured while saving</div>}
+			@if (isUsersError) {<div class="validation">An error accured while retrieving users</div>}
+			@if (!nameValid) {<div class="validation">Name is mandatory</div>}
+			@if (!hoursValid) {<div class="validation">Hours should be a value between 0-12</div>}
+			@if (!minutesValid) {<div class="validation">Minutes should be a value between 0-59</div>}
+			@if (!descriptionValid) {<div class="validation">Description is mandatory</div>}
+		</div>
+
+		<div class="input-group-sm mb-3 buttons-group">
+			<button type="button" class="btn btn-success" style="width: 35%" (click)="saveAction()" [disabled]="isUsersError">Save</button>
+			<button type="button" class="btn btn-danger" style="width: 35%" (click)="closeAction()">Cancel</button>
+		</div>
+	</div>
+	@if (isLoading) {
+	<div class="loading">
+		<LoadingSpinnerComponent />
+	</div>
+	}
+</div>
