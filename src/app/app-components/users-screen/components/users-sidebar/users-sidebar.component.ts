@@ -131,9 +131,11 @@ export class UsersSidebarComponent implements OnInit {
   saveNewUser(user: User): void {
     this.activeUsers.push(user);
     this.activeUsers.sort((a, b) => `${a.fname} ${a.lname}`.toLowerCase().localeCompare(`${b.fname} ${b.lname}`.toLowerCase()));
-    this.activeUsers = [...this.activeUsers];
-    this.filteredActiveUsers = [...this.activeUsers];
-    this.filteredArchivedUsers = [...this.archivedUsers];
+    setTimeout(() => {
+      this.activeUsers = [...this.activeUsers];
+      this.filteredActiveUsers = [...this.activeUsers];
+      this.filteredArchivedUsers = [...this.archivedUsers];
+    }, 500);
   }
 
   filterUsers(event: KeyboardEvent): void {

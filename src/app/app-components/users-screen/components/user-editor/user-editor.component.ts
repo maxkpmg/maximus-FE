@@ -135,7 +135,7 @@ export class UserEditorComponent implements OnInit, AfterViewInit {
       this.phoneFieldRef.nativeElement.classList.remove('invalid');
     }
 
-    if (!/^[a-z]+@kpmg\.com$/.test(this.email.toLowerCase())) {
+    if (!/^[a-z0-9]+@kpmg\.com$/.test(this.email.toLowerCase())) {
       this.emailValid = false;
       this.emailFieldRef.nativeElement.classList.add('invalid');
     } else {

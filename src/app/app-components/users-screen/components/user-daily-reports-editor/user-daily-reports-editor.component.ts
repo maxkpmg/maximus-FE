@@ -49,7 +49,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.state = 'open';
     this.cdr.detectChanges();
-    setTimeout(() => this.calculateTotalTimeReported(), 500);
+    setTimeout(() => this.calculateTotalTimeReported(), 1000);
   }
 
   async ngOnInit(): Promise<void> {

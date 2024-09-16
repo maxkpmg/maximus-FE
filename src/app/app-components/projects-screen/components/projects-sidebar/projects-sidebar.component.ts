@@ -136,7 +136,9 @@ export class ProjectsSidebarComponent implements OnInit {
   saveProject(project: Project): void {
     this.activeProjects.push(project);
     this.activeProjects.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-    this.filteredActiveProjects = [...this.activeProjects];
-    this.filteredArchivedProjects = [...this.archivedProjects];
+    setTimeout(() => {
+      this.filteredActiveProjects = [...this.activeProjects];
+      this.filteredArchivedProjects = [...this.archivedProjects];
+    }, 500);
   }
 }
