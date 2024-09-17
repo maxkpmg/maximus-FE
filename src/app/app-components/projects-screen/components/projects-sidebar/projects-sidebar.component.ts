@@ -139,6 +139,6 @@ export class ProjectsSidebarComponent implements OnInit {
     setTimeout(() => {
       this.filteredActiveProjects = [...this.activeProjects];
       this.filteredArchivedProjects = [...this.archivedProjects];
-    }, 500);
+    }, 1000);
   }
 }

@@ -176,11 +176,15 @@ export class UserMonthlyReportsComponent implements OnChanges {
   }
 
   updateCellColor(date: string): void {
-    var spans = document.querySelectorAll<HTMLSpanElement>('td > span');
+    const day = date.slice(0, 2);
+    const spans = document.querySelectorAll<HTMLSpanElement>('td > span');
     spans.forEach(span => {
       const match = span.innerHTML.match(/^\d{1,2}/);
-      if (match && match[0] === date)
-        span.style.backgroundColor = '#75e56d';
+      if (match && match[0] === day) {
+        if (this.hoursReportedApproved(date)) span.style.backgroundColor = '#75e56d';
+        else span.style.backgroundColor = '#ff595e';
+        this.addReportedHoursIndicatorToCell(span, date);
+      }
     });
   }
 
@@ -195,10 +199,15 @@ export class UserMonthlyReportsComponent implements OnChanges {
       }
       totalHours += Math.floor(totalMinutes / 60);
     }
-    const newDiv = document.createElement('div');
-    newDiv.className = 'time-reported';
-    newDiv.textContent = `${totalHours}/9`;
-    span.appendChild(newDiv);
+    const existingHoursIndicator = span.querySelector('.time-reported') as HTMLDivElement;
+    if (existingHoursIndicator) {
+      existingHoursIndicator.textContent = `${totalHours}/9`;
+    } else {
+      const newDiv = document.createElement('div');
+      newDiv.className = 'time-reported';
+      newDiv.textContent = `${totalHours}/9`;
+      span.appendChild(newDiv);
+    }
   }
 
   hoursReportedApproved(date: string): boolean {

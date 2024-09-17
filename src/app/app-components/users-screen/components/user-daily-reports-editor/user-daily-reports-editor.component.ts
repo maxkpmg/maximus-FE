@@ -66,6 +66,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
       if (reportedProjectsToFetch.length) {
         await this.getProjectsById(reportedProjectsToFetch);
       }
+      // map the model of each bookmarked project - either new or filled with values from a report fount on that date
       this.projectsModel = this.bookmarkedProjects.map((project) => {
         const matchingReport = this.data.reports.find(report => report.project_id === project.id);
         return matchingReport ? {
@@ -145,6 +146,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
       for (const report of this.projectsModel) {
         const hours = Number(report.hours);
         const minutes = Number(report.minutes);
+        // if existant report from before or new one
         if (report.id > 0 || (!isNaN(hours) && hours > 0) || (!isNaN(minutes) && minutes > 0)) {
           const data: TimeReport = {
             id: report.id,
@@ -160,20 +162,24 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
           reportsToInsert.push(data);
         }
       }
-      try {
-        const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/create-multiple-time-reports', {
-          method: "POST",
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ time_reports: reportsToInsert })
-        });
-        if (response.ok) {
-          const dayReports = await response.json();
-          this.save.emit({ timeReports: dayReports, date: this.data.date });
+      if (reportsToInsert.length) {
+        try {
+          const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/create-multiple-time-reports', {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ time_reports: reportsToInsert })
+          });
+          if (response.ok) {
+            const dayReports = await response.json();
+            this.save.emit({ timeReports: dayReports, date: this.data.date });
+          }
+        } catch (e) {
+          this.isLoading = false;
+          this.isError = true;
+          console.error('Error: ', e);
         }
-      } catch (e) {
-        this.isLoading = false;
-        this.isError = true;
-        console.error('Error: ', e);
+      } else {
+        this.closeAction();
       }
     }
   }
@@ -265,6 +271,8 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
       if (isNaN(hoursVal) || minutesVal < 1) hoursRef.value = '1';
       else hoursRef.value = `${hoursVal + 1}`;
     }
+    this.projectsModel[index].hours = hoursRef.value;
+    this.projectsModel[index].minutes = minutesRef.value;
   }
 
   onMinusButtonClick(index: number): void {
@@ -278,6 +286,8 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
       hoursRef.value = `${hoursVal - 1}`;
       minutesRef.value = '30';
     }
+    this.projectsModel[index].hours = hoursRef.value;
+    this.projectsModel[index].minutes = minutesRef.value;
   }
 
   onInput(input: any, index: number, isHours: boolean): void {

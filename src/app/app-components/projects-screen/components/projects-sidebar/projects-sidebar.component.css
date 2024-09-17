@@ -15,6 +15,13 @@
   display: none;
 }
 
+.search {
+  height: 5vh;
+  font-size: 2vh;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+
 button, a {
   display: block;
   height: 5vh;

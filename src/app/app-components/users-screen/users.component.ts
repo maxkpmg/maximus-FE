@@ -116,7 +116,7 @@ export class UsersScreenComponent {
       this.userWeeklyReportsRef.styleDayHeadings();
     } else {
       this.userMonthlyReportsRef.setTimeReports(data.timeReports, data.date);
-      this.userMonthlyReportsRef.updateCellColor(data.date.slice(0, 2));
+      this.userMonthlyReportsRef.updateCellColor(data.date);
     }
     setTimeout(() => this.isUserDailyReportsEditor = false, 150);
   }

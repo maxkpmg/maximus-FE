@@ -17,3 +17,12 @@ h2 {
   margin-bottom: 2vh;
   white-space: nowrap;
 }
+
+label {
+  font-size: 2vh;
+}
+
+input[type=radio] {
+  height: 2vh;
+  width: 2vh;
+}

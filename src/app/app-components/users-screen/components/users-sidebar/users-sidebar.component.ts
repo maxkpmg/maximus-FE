@@ -135,7 +135,7 @@ export class UsersSidebarComponent implements OnInit {
       this.activeUsers = [...this.activeUsers];
       this.filteredActiveUsers = [...this.activeUsers];
       this.filteredArchivedUsers = [...this.archivedUsers];
-    }, 500);
+    }, 1000);
   }
 
   filterUsers(event: KeyboardEvent): void {
