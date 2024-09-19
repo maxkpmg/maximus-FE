@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectorRef, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectorRef, OnInit } from '@angular/core';
 import { Project, TimeReport, User } from '../../../../interfaces';
 import { CommonModule } from '@angular/common';
 import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinner.component';
@@ -10,10 +10,10 @@ import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinne
   templateUrl: './user-weekly-reports.component.html',
   styleUrl: './user-weekly-reports.component.css',
 })
-export class UserWeeklyReportsComponent implements OnInit, OnChanges {
+export class UserWeeklyReportsComponent implements OnInit {
   @Input() user: User;
   @Output() openDailyReportEditor = new EventEmitter<{ date: string, day: string, reports: TimeReport[] }>();
-  projects: Project[];
+  projects: Project[] = [];
   fetchedWeeks: string[] = [];
   timeReports: { [key: string]: TimeReport[]; } = {}; // allow dynamic values to be added
   today: Date = new Date();
@@ -41,11 +41,6 @@ export class UserWeeklyReportsComponent implements OnInit, OnChanges {
       this.isError = true;
       console.error('Error: ', e);
     }
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    // this.colorsArray = {};
-    // this.projectNamesArray = {};
   }
 
   async getTimeReports(): Promise<void> {
@@ -108,7 +103,10 @@ export class UserWeeklyReportsComponent implements OnInit, OnChanges {
   }
 
   setTimeReports(timeReports: TimeReport[], date: string): void {
+    console.log(timeReports)
+    console.log(1)
     this.timeReports[date] = timeReports;
+    console.log(1)
     this.cdr.detectChanges();
   }
 

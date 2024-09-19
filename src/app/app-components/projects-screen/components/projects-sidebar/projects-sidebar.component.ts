@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Project } from '../../../../interfaces';
 import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinner.component';
@@ -18,43 +18,21 @@ import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinne
     ])
   ]
 })
-export class ProjectsSidebarComponent implements OnInit {
+export class ProjectsSidebarComponent implements OnChanges {
   @Output() projectSelect = new EventEmitter<Project>();
   @Output() openNewProjectEditor = new EventEmitter<void>();
-  @Output() getProjects = new EventEmitter<Project[]>();
-  activeProjects: Project[] = [];
-  archivedProjects: Project[] = [];
+  @Input() activeProjects: Project[];
+  @Input() archivedProjects: Project[];
   filteredActiveProjects: Project[] = [];
   filteredArchivedProjects: Project[] = [];
   isOptionsOpened: boolean = false;
   isArchiveOpened: boolean = false;
   state = 'closed';
-  isError: boolean = false;
-  isLoading: boolean = true;
 
 
-  async ngOnInit(): Promise<void> {
-    try {
-      const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-projects', {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ onlyActiveProjects: false })
-      });
-      if (response.ok) {
-        const projects = await response.json();
-        for (let i = 0; i < projects.length; i++) {
-          if (projects[i].active) this.activeProjects.push(projects[i]);
-          else this.archivedProjects.push(projects[i]);
-        }
-        this.filteredActiveProjects = [...this.activeProjects];
-        this.filteredArchivedProjects = [...this.archivedProjects];
-        this.isLoading = false;
-        this.getProjects.emit(projects);
-      }
-    } catch (e) {
-      this.isError = true;
-      console.error('Error: ', e);
-    }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.filteredActiveProjects = [...this.activeProjects];
+    this.filteredArchivedProjects = [...this.archivedProjects];
   }
 
   filterProjects(event: KeyboardEvent): void {
@@ -72,39 +50,6 @@ export class ProjectsSidebarComponent implements OnInit {
       }
       clickedElement.className += ' active';
     }
-  }
-
-  archiveProject(projectToArchive: Project): void {
-    this.activeProjects = this.activeProjects.filter(project => project.id !== projectToArchive.id);
-    projectToArchive.active = false;
-    this.archivedProjects.push(projectToArchive);
-    this.archivedProjects = this.archivedProjects.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-    this.filteredActiveProjects = [...this.activeProjects];
-    this.filteredArchivedProjects = [...this.archivedProjects];
-    if (!this.isArchiveOpened) {
-      const archiveOpenerButton = document.querySelector('.archive-opener-button');
-      if (archiveOpenerButton instanceof HTMLElement)
-        archiveOpenerButton.click();
-      setTimeout(() => {
-        const button = document.getElementById(projectToArchive.name);
-        if (button)
-          button.className += ' active';
-      }, 500);
-    }
-  }
-
-  reactivateProject(projectToReactivate: Project): void {
-    this.archivedProjects = this.archivedProjects.filter(project => project.id !== projectToReactivate.id);
-    projectToReactivate.active = true;
-    this.activeProjects.push(projectToReactivate);
-    this.activeProjects = this.activeProjects.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-    this.filteredActiveProjects = [...this.activeProjects];
-    this.filteredArchivedProjects = [...this.archivedProjects];
-    setTimeout(() => {
-      const button = document.getElementById(projectToReactivate.name);
-      if (button)
-        button.className += ' active';
-    }, 500);
   }
 
   onProjectSelect($event: any, project: Project) {

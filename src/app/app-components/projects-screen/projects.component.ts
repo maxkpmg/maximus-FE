@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { TimeReport, Project } from '../../interfaces';
 import { TimeReportEditorComponent } from './components/time-report-editor/time-report-editor.component';
 import { ProjectEditorComponent } from './components/project-editor/project-editor.component';
@@ -23,8 +23,9 @@ import { ProjectFilterComponent } from './components/project-filter/project-filt
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.css'
 })
-export class ProjectsScreenComponent {
-  projects: Project[] = [];
+export class ProjectsScreenComponent implements OnInit {
+  archivedProjects: Project[] = [];
+  activeProjects: Project[] = [];
   selectedProject: Project = { id: 0,name: '', active: false };
   timeReports: TimeReport[] = [];
   filteredTimeReports: TimeReport[] = this.timeReports;
@@ -38,8 +39,27 @@ export class ProjectsScreenComponent {
   @ViewChild('pi') projectInfoRef: ProjectInfoComponent;
 
 
-  initProjects(projects: Project[]): void {
-    this.projects = projects;
+  async ngOnInit(): Promise<void> {
+    try {
+      const projectsResponse = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-projects', {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ onlyActiveProjects: false })
+      });
+      if (projectsResponse.ok) {
+        const projects = await projectsResponse.json();
+        const activeProjects = [];
+        const archivedProjects = [];
+        for (let i = 0; i < projects.length; i++) {
+          if (projects[i].active) activeProjects.push(projects[i]);
+          else archivedProjects.push(projects[i]);
+        }
+        this.activeProjects = activeProjects;
+        this.archivedProjects = archivedProjects;
+      }
+    } catch (e) {
+      console.error('Error: ', e);
+    }
   }
 
   onProjectSelect(project: Project): void {
@@ -94,19 +114,17 @@ export class ProjectsScreenComponent {
   saveProject(data: { project: Project, isNewProject: boolean }): void {
     const project = data.project;
     if (data.isNewProject) {
-      this.sideBarRef.activeProjects.push(project);
-      this.sideBarRef.activeProjects.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-      this.projects = this.sideBarRef.activeProjects;
+      this.activeProjects = [...this.activeProjects, project]
+      this.activeProjects.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
       setTimeout(() => this.isProjectEditor = false, 150);
     } else {
-      for (let i = 0; i < this.sideBarRef.activeProjects.length; i++) {
-        if (this.sideBarRef.activeProjects[i].id === data.project.id) {
-          this.sideBarRef.activeProjects[i] = project;
-          this.sideBarRef.activeProjects.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+      for (let i = 0; i < this.activeProjects.length; i++) {
+        if (this.activeProjects[i].id === data.project.id) {
+          this.activeProjects[i] = project;
+          this.activeProjects = [...this.activeProjects]
           break;
         }
       }
-      this.projects = this.sideBarRef.activeProjects;
       setTimeout(() => this.isProjectEditor = false, 150);
     }
   }
@@ -123,10 +141,31 @@ export class ProjectsScreenComponent {
   onConfirm(): void {
     switch (this.confirmationData.type) {
       case 'archive':
-        this.sideBarRef.archiveProject(this.selectedProject);
+        this.activeProjects = this.activeProjects.filter(project => project.id !== this.selectedProject.id);
+        this.selectedProject.active = false;
+        this.archivedProjects.push(this.selectedProject);
+        this.archivedProjects = this.archivedProjects.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+        if (!this.selectedProject) {
+          const archiveOpenerButton = document.querySelector('.archive-opener-button');
+          if (archiveOpenerButton instanceof HTMLElement)
+            archiveOpenerButton.click();
+          setTimeout(() => {
+            const button = document.getElementById(this.selectedProject.name);
+            if (button)
+              button.className += ' active';
+          }, 500);
+        }
         break;
       case 'reactivate':
-        this.sideBarRef.reactivateProject(this.selectedProject);
+        this.archivedProjects = this.archivedProjects.filter(project => project.id !== this.selectedProject.id);
+        this.selectedProject.active = true;
+        this.activeProjects.push(this.selectedProject);
+        this.activeProjects = this.activeProjects.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+        setTimeout(() => {
+          const button = document.getElementById(this.selectedProject.name);
+          if (button)
+            button.className += ' active';
+        }, 500);
         break;
       case 'delete report':
         this.timeReports = this.timeReports.filter(report => report.id !== this.confirmationData.id);

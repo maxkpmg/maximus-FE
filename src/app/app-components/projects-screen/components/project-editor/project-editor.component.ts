@@ -21,7 +21,8 @@ import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinne
 })
 export class ProjectEditorComponent implements OnInit, AfterViewInit {
   @Input() project: Project;
-  @Input() projects: Project[];
+  @Input() activeProjects: Project[];
+  @Input() archivedProjects: Project[];
   @Output() save = new EventEmitter<{ project: Project, isNewProject: boolean }>();
   @Output() close = new EventEmitter<void>();
   @ViewChild('n') nameFieldRef: ElementRef;
@@ -122,7 +123,9 @@ export class ProjectEditorComponent implements OnInit, AfterViewInit {
       this.error = 'Empty project name';
       return false;
     }
-    if (this.projects.some(project => project.name.toLowerCase() === this.name.toLowerCase())) {
+    if (this.activeProjects.some(project => project.name.toLowerCase() === this.name.toLowerCase()) ||
+      this.archivedProjects.some(project => project.name.toLowerCase() === this.name.toLowerCase()))
+    {
       this.nameFieldRef.nativeElement.classList.add('invalid');
       this.error = 'Project name alread exists';
       return false;
@@ -158,8 +161,10 @@ export class ProjectEditorComponent implements OnInit, AfterViewInit {
       body: JSON.stringify({ project: this.project })
     });
     if (response.ok) {
-      if (isNewProject)
+      if (isNewProject) {
         this.project.id = await response.json();
+        this.project.active = true;
+      }
       this.save.emit({ project: this.project, isNewProject: isNewProject });
     }
   }

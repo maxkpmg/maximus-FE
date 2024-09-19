@@ -21,7 +21,8 @@ import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinne
 })
 export class UserEditorComponent implements OnInit, AfterViewInit {
   @Input() user: User;
-  @Input() users: User[] = [];
+  @Input() activeUsers: User[];
+  @Input() archivedUsers: User[];
   @Output() save = new EventEmitter<{ user: User, isNewUser: boolean }>();
   @Output() close = new EventEmitter<void>();
   @ViewChild('fn') fnameFieldRef: ElementRef;
@@ -102,8 +103,14 @@ export class UserEditorComponent implements OnInit, AfterViewInit {
 
   validateData(): boolean {
     if (this.user.id < 1) {
-      for (let i = 0; i < this.users.length; i++) {
-        if (this.users[i].email === this.email) {
+      for (let i = 0; i < this.activeUsers.length; i++) {
+        if (this.activeUsers[i].email === this.email) {
+          this.existValid = false;
+          return false;
+        }
+      }
+      for (let i = 0; i < this.archivedUsers.length; i++) {
+        if (this.archivedUsers[i].email === this.email) {
           this.existValid = false;
           return false;
         }
@@ -142,7 +149,6 @@ export class UserEditorComponent implements OnInit, AfterViewInit {
       this.emailValid = true;
       this.emailFieldRef.nativeElement.classList.remove('invalid');
     }
-    console.log(`${this.fnameValid} && ${this.lnameValid} && ${this.emailValid} && ${this.phoneValid}`)
     return this.fnameValid && this.lnameValid && this.emailValid && this.phoneValid;
   }
 }

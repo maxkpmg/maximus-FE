@@ -1,5 +1,4 @@
 <div class="sidebar">
-	@if (!isLoading) {
 	<div class="options" [@openClose]="state">
 		<button class="options-opener-button" (click)="optionsController()">
 			@if (!isOptionsOpened){<img src="../../../assets/3 dots.png" />}
@@ -28,14 +27,4 @@
 			}
 		</div>
 	</div>
-	}
-	@if (isLoading) {
-	<div class="loading">
-		@if (isError){
-		Error retrieving data
-		<div><img class="error-img" src="../../../assets/error.png" /></div>
-		}
-		@if (!isError){<LoadingSpinnerComponent />}
-	</div>
-	}
 </div>

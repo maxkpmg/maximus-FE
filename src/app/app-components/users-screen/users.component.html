@@ -1,11 +1,11 @@
 <main>
   <aside>
-    <UsersSidebarComponent #sideBar (userSelect)="onUserSelected($event)" (getUsers)="initUsers($event)"
-      (openNewUserEditor)="displayUserEditor()" />
+    <UsersSidebarComponent #sideBar [activeUsers]="activeUsers" [archivedUsers]="archivedUsers"
+      (userSelect)="onUserSelected($event)" (openNewUserEditor)="displayUserEditor()" />
   </aside>
 
   <div class="content">
-    <UserInfoComponent [user]="selectedUser"  [isMonthlyOrWeeklyView]="isWeeklyOrMonthlyReports"
+    <UserInfoComponent [user]="selectedUser" [isMonthlyOrWeeklyView]="isWeeklyOrMonthlyReports"
       (archive)="displayConfirmation($event)" (edit)="displayUserEditor($event)" (navigateWeeks)="navigateWeeks($event)" />
     @if (isWeeklyOrMonthlyReports) {
     <UserWeeklyReportsComponent #userWeeklyReports [user]="selectedUser" (openDailyReportEditor)="displayUserDailyReportEditor($event)" />
@@ -24,7 +24,8 @@
     (save)="saveUserDailyReport($event)" (close)="closeUserDailyReportEditor()" />
   }
   @if (isUserEditor) {
-  <UserEditorComponent [users]="users" [user]="userToEdit" (save)="saveUser($event)" (close)="closeUserEditor()" />
+  <UserEditorComponent [user]="userToEdit" [activeUsers]="activeUsers" [archivedUsers]="archivedUsers"
+    (save)="saveUser($event)" (close)="closeUserEditor()" />
   }
   @if (isConfirmation) {
   <UserConfirmationComponent [action]="confirmationData" (confirm)="onConfirm()" (close)="closeConfirmation()" />

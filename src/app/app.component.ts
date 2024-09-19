@@ -14,6 +14,7 @@ import { TasksScreenComponent } from './app-components/tasks-screen/tasks.compon
 export class AppComponent {
   tab: string = 'users';
 
+
   tabSwitch(type: string): void {
     this.tab = type;
   }

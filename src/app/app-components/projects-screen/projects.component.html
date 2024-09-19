@@ -1,7 +1,7 @@
 <main>
   <aside>
-    <ProjectsSidebarComponent #sb (projectSelect)="onProjectSelect($event)" (openNewProjectEditor)="displayProjectEditor()"
-      (getProjects)="initProjects($event)" />
+    <ProjectsSidebarComponent #sb [activeProjects]="activeProjects" [archivedProjects]="archivedProjects"
+      (projectSelect)="onProjectSelect($event)" (openNewProjectEditor)="displayProjectEditor()" />
   </aside>
 
   <div class="content">
@@ -22,7 +22,8 @@
     (save)="saveTimeReport($event)" (close)="closeTimeReportEditor()" />
   }
   @if (isProjectEditor) {
-  <ProjectEditorComponent [project]="projectToEdit" [projects]="projects" (save)="saveProject($event)" (close)="closeProjectEditor()" />
+  <ProjectEditorComponent [project]="projectToEdit" [activeProjects]="activeProjects" [archivedProjects]="archivedProjects"
+    (save)="saveProject($event)" (close)="closeProjectEditor()" />
   }
   @if (isConfirmation) {
   <ProjectConfirmationComponent [action]="confirmationData" (confirm)="onConfirm()" (close)="closeConfirmation()" />

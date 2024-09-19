@@ -22,7 +22,7 @@
 					<div class="input-group-prepend" style="width: 70%">
 						<span class="input-group-text">Hours</span>
 					</div>
-					<input #h [(ngModel)]="projectsModel[i].hours" type="number" class="form-control" maxlength="2" [id]="'hours' + i"
+					<input #h [(ngModel)]="projectsModel[i].hours" type="number" class="form-control" maxlength="2"
 						style="width: 30%" (input)="onInput($event, i, true)">
 				</div>
 
@@ -30,7 +30,7 @@
 					<div class="input-group-prepend" style="width: 70%">
 						<span class="input-group-text">Minutes</span>
 					</div>
-					<input #m [(ngModel)]="projectsModel[i].minutes" type="number" class="form-control" maxlength="2" [id]="'minutes' + i"
+					<input #m [(ngModel)]="projectsModel[i].minutes" type="number" class="form-control" maxlength="2"
 						style="width: 30%" (input)="onInput($event, i, false)">
 				</div>
 
@@ -41,7 +41,7 @@
 					<div class="input-group-prepend" style="width: 40%">
 						<span class="input-group-text">Description</span>
 					</div>
-					<input #d [(ngModel)]="projectsModel[i].description" type="text" class="form-control" style="width: 60%" [id]="'description' + i">
+					<input #d [(ngModel)]="projectsModel[i].description" type="text" class="form-control" style="width: 60%">
 				</div>
 			</div>
 			}

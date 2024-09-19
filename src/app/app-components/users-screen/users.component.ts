@@ -26,7 +26,8 @@ import { UserFilterComponent } from './components/user-filter/user-filter.compon
   styleUrl: './users.component.css'
 })
 export class UsersScreenComponent {
-  users: User[] = [];
+  activeUsers: User[] = [];
+  archivedUsers: User[] = [];
   selectedUser: User = { id: -1, fname: '', lname: '', phone: '', email: '', active: false };
   timeReportsToDisplay: TimeReport[] = [];
   isWeeklyOrMonthlyReports: boolean = false;
@@ -41,8 +42,27 @@ export class UsersScreenComponent {
   @ViewChild('userWeeklyReports') userWeeklyReportsRef: UserWeeklyReportsComponent;
 
 
-  initUsers(users: User[]): void {
-    this.users = users;
+  async ngOnInit(): Promise<void> {
+    try {
+      const usersResponse = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-users', {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ onlyActiveUsers: false })
+      });
+      if (usersResponse.ok) {
+        const users = await usersResponse.json();
+        const activeUsers = [];
+        const archivedUsers = [];
+        for (let i = 0; i < users.length; i++) {
+          if (users[i].active) activeUsers.push(users[i]);
+          else archivedUsers.push(users[i]);
+        }
+        this.activeUsers = activeUsers;
+        this.archivedUsers = archivedUsers;
+      }
+    } catch (e) {
+      console.error('Error: ', e);
+    }
   }
 
   onUserSelected(user: User): void {
@@ -61,18 +81,17 @@ export class UsersScreenComponent {
   saveUser(data: { user: User, isNewUser: boolean }): void {
     const user = data.user;
     if (data.isNewUser) {
-      this.sideBarRef.activeUsers.push(user);
-      this.sideBarRef.activeUsers.sort((a, b) => `${a.fname} ${a.lname}`.toLowerCase().localeCompare(`${b.fname} ${b.lname}`.toLowerCase()));
-      this.users = this.sideBarRef.activeUsers;
+      this.activeUsers = [...this.activeUsers, user];
+      this.activeUsers.sort((a, b) => `${a.fname} ${a.lname}`.toLowerCase().localeCompare(`${b.fname} ${b.lname}`.toLowerCase()));
       setTimeout(() => this.isUserEditor = false, 150);
     } else {
-      for (let i = 0; i < this.sideBarRef.activeUsers.length; i++) {
-        if (this.sideBarRef.activeUsers[i].id === data.user.id) {
-          this.sideBarRef.activeUsers[i] = user;
+      for (let i = 0; i < this.activeUsers.length; i++) {
+        if (this.activeUsers[i].id === data.user.id) {
+          this.activeUsers[i] = user;
+          this.activeUsers = [...this.activeUsers];
           break;
         }
       }
-      this.users = this.sideBarRef.activeUsers;
       setTimeout(() => this.isUserEditor = false, 150);
     }
   }
@@ -90,10 +109,31 @@ export class UsersScreenComponent {
     setTimeout(() => this.isConfirmation = false, 150);
     switch (this.confirmationData.type) {
       case 'archive':
-        this.sideBarRef.archiveUser(this.selectedUser);
+        this.activeUsers = this.activeUsers.filter(user => user !== this.selectedUser);
+        this.selectedUser.active = false;
+        this.archivedUsers.push(this.selectedUser);
+        this.archivedUsers = this.archivedUsers.sort((a, b) => `${a.fname} ${a.lname}`.toLowerCase().localeCompare(`${b.fname} ${b.lname}`.toLowerCase()));
+        if (!this.sideBarRef.isArchiveOpened) {
+          const archiveOpenerButton = document.querySelector('.archive-opener-button');
+          if (archiveOpenerButton instanceof HTMLElement)
+            archiveOpenerButton.click();
+          setTimeout(() => {
+            const button = document.getElementById(`${this.selectedUser.fname}${this.selectedUser.lname}${this.selectedUser.id}`);
+            if (button)
+              button.className += ' active';
+          }, 500);
+        }
         break;
       case 'reactivate':
-        this.sideBarRef.reactivateUser(this.selectedUser);
+        this.archivedUsers = this.archivedUsers.filter(user => user.id !== this.selectedUser.id);
+        this.selectedUser.active = true;
+        this.activeUsers.push(this.selectedUser);
+        this.activeUsers = this.activeUsers.sort((a, b) => `${a.fname} ${a.lname}`.toLowerCase().localeCompare(`${b.fname} ${b.lname}`.toLowerCase()));
+        setTimeout(() => {
+          const button = document.getElementById(`${this.selectedUser.fname}${this.selectedUser.lname}${this.selectedUser.id}`);
+          if (button)
+            button.className += ' active';
+        }, 500);
     }
   }
 

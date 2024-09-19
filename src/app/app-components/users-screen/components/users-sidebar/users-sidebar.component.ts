@@ -1,12 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { User } from '../../../../interfaces';
-import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'UsersSidebarComponent',
   standalone: true,
-  imports: [LoadingSpinnerComponent],
+  imports: [],
   templateUrl: './users-sidebar.component.html',
   styleUrl: './users-sidebar.component.css',
   animations: [
@@ -18,44 +17,21 @@ import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinne
     ])
   ]
 })
-export class UsersSidebarComponent implements OnInit {
-  @Input() users: User [];
+export class UsersSidebarComponent implements OnChanges {
   @Output() userSelect = new EventEmitter<User>();
   @Output() openNewUserEditor = new EventEmitter<void>();
-  @Output() getUsers = new EventEmitter<User[]>();
-  activeUsers: User[] = [];
-  archivedUsers: User[] = [];
+  @Input() activeUsers: User[];
+  @Input() archivedUsers: User[];
   filteredActiveUsers: User[] = [];
   filteredArchivedUsers: User[] = [];
   isOptionsOpened: boolean = false;
   isArchiveOpened: boolean = false;
   state = 'closed';
-  isError: boolean = false;
-  isLoading: boolean = true;
 
 
-  async ngOnInit(): Promise<void> {
-    try {
-      const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-users', {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ onlyActiveUsers: false })
-      });
-      if (response.ok) {
-        const users = await response.json();
-        for (let i = 0; i < users.length; i++) {
-          if (users[i].active) this.activeUsers.push(users[i]);
-          else this.archivedUsers.push(users[i]);
-        }
-        this.filteredActiveUsers = [...this.activeUsers];
-        this.filteredArchivedUsers = [...this.archivedUsers];
-        this.isLoading = false;
-        this.getUsers.emit(users);
-      }
-    } catch (e) {
-      this.isError = true;
-      console.error('Error: ', e);
-    }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.filteredActiveUsers = [...this.activeUsers];
+    this.filteredArchivedUsers = [...this.archivedUsers];
   }
 
   onButtonGroupClick($event: any): void {
@@ -69,39 +45,6 @@ export class UsersSidebarComponent implements OnInit {
     }
   }
 
-  archiveUser(userToArchive: User): void {
-    this.activeUsers = this.activeUsers.filter(project => project !== userToArchive);
-    userToArchive.active = false;
-    this.archivedUsers.push(userToArchive);
-    this.archivedUsers = this.archivedUsers.sort((a, b) => `${a.fname} ${a.lname}`.toLowerCase().localeCompare(`${b.fname} ${b.lname}`.toLowerCase()));
-    this.filteredActiveUsers = [...this.activeUsers];
-    this.filteredArchivedUsers = [...this.archivedUsers];
-    if (!this.isArchiveOpened) {
-      const archiveOpenerButton = document.querySelector('.archive-opener-button');
-      if (archiveOpenerButton instanceof HTMLElement)
-        archiveOpenerButton.click();
-      setTimeout(() => {
-        const button = document.getElementById(`${userToArchive.fname}${userToArchive.lname}${userToArchive.id}`);
-        if (button)
-          button.className += ' active';
-      }, 500);
-    }
-  }
-
-  reactivateUser(userToReactivate: User): void {
-    this.archivedUsers = this.archivedUsers.filter(user => user.id !== userToReactivate.id);
-    userToReactivate.active = true;
-    this.activeUsers.push(userToReactivate);
-    this.activeUsers = this.activeUsers.sort((a, b) => `${a.fname} ${a.lname}`.toLowerCase().localeCompare(`${b.fname} ${b.lname}`.toLowerCase()));
-    this.filteredActiveUsers = [...this.activeUsers];
-    this.filteredArchivedUsers = [...this.archivedUsers];
-    setTimeout(() => {
-      const button = document.getElementById(`${userToReactivate.fname}${userToReactivate.lname}${userToReactivate.id}`);
-      if (button)
-        button.className += ' active';
-    }, 500);
-  }
-
   onUserSelect($event: any, user: User) {
     const clickedElement = $event.target || $event.srcElement;
     if (clickedElement.nodeName === 'BUTTON') {
@@ -110,7 +53,7 @@ export class UsersSidebarComponent implements OnInit {
     }
   }
 
-  optionsController():void {
+  optionsController(): void {
     if (this.state === 'closed') {
       this.state = 'open';
       setTimeout(() => this.isOptionsOpened = true, 150);
