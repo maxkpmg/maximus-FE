@@ -2,7 +2,9 @@
   "routes": [
     {
       "route": "/*",
-      "allowedRoles": ["authenticated"]
+      "allowedRoles": [
+        "authenticated"
+      ]
     }
   ],
   "auth": {
@@ -12,10 +14,13 @@
           "openIdConnectConfiguration": {
             "issuer": "https://login.microsoftonline.com/2abd9360-282b-4f53-80ab-a7c83ad1036c/v2.0",
             "clientId": "2b0b0842-ca20-4057-8fe3-e1ab57547bd8",
-            "clientSecretSettingName": "maximus-time-reports-FE-ag-secret"
+            "clientSecretSettingName": "maximus-time-reports-FE-ag"
           }
         }
       }
     }
+  },
+  "login": {
+    "loginMode": "redirect"
   }
 }
