@@ -2,9 +2,12 @@
   "routes": [
     {
       "route": "/*",
-      "allowedRoles": [
-        "authenticated"
-      ]
+      "allowedRoles": ["authenticated"]
+    },
+    {
+      "route": "/*",
+      "allowedRoles": ["anonymous"],
+      "redirect": "/.auth/login/aad"
     }
   ],
   "auth": {
