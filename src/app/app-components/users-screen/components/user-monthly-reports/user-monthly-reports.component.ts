@@ -220,8 +220,8 @@ export class UserMonthlyReportsComponent implements OnChanges {
       newDiv.textContent = `${totalHours}/9`;
       newDiv.style.backgroundColor = color;
       span.appendChild(newDiv);
-      span.innerHTML += projectIndicatorsHtml;
     }
+    span.innerHTML += projectIndicatorsHtml;
   }
 
   hoursReportedApproved(date: string): boolean {
