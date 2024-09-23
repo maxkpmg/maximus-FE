@@ -3,11 +3,6 @@
     {
       "route": "/*",
       "allowedRoles": ["authenticated"]
-    },
-    {
-      "route": "/login",
-      "allowedRoles": ["anonymous"],
-      "redirect": "/.auth/login/aad"
     }
   ],
   "auth": {
