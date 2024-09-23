@@ -5,7 +5,7 @@
       "allowedRoles": ["authenticated"]
     },
     {
-      "route": "/*",
+      "route": "/login",
       "allowedRoles": ["anonymous"],
       "redirect": "/.auth/login/aad"
     }
