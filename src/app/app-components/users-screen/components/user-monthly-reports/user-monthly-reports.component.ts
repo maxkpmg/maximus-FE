@@ -118,11 +118,9 @@ export class UserMonthlyReportsComponent implements OnChanges {
         } else if (i >= 5) {
           span.style.backgroundColor = 'whitesmoke';
         } else if (this.hoursReportedApproved(formattedDate)) {
-          span.style.backgroundColor = '#75e56d';
-          this.addReportedHoursIndicatorToCell(span, formattedDate);
+          this.addReportedHoursIndicatorToCell(span, formattedDate, '#10b981');
         } else {
-          span.style.backgroundColor = '#ff595e';
-          this.addReportedHoursIndicatorToCell(span, formattedDate);
+          this.addReportedHoursIndicatorToCell(span, formattedDate, '#ff595e');
         }
       }
     }
@@ -139,11 +137,9 @@ export class UserMonthlyReportsComponent implements OnChanges {
           } else if (i >= 5) {
             span.style.backgroundColor = 'whitesmoke';
           } else if (this.hoursReportedApproved(formattedDate)) {
-            span.style.backgroundColor = '#75e56d';
-            this.addReportedHoursIndicatorToCell(span, formattedDate);
+            this.addReportedHoursIndicatorToCell(span, formattedDate, '#10b981');
           } else {
-            span.style.backgroundColor = '#ff595e';
-            this.addReportedHoursIndicatorToCell(span, formattedDate);
+            this.addReportedHoursIndicatorToCell(span, formattedDate, '#ff595e');
           }
         }
       }
@@ -160,11 +156,9 @@ export class UserMonthlyReportsComponent implements OnChanges {
         } else if (i >= 5) {
           span.style.backgroundColor = 'whitesmoke';
         } else if (this.hoursReportedApproved(formattedDate)) {
-          span.style.backgroundColor = '#75e56d';
-          this.addReportedHoursIndicatorToCell(span, formattedDate);
+          this.addReportedHoursIndicatorToCell(span, formattedDate, '#10b981');
         } else {
-          span.style.backgroundColor = '#ff595e';
-          this.addReportedHoursIndicatorToCell(span, formattedDate);
+          this.addReportedHoursIndicatorToCell(span, formattedDate, '#ff595e');
         }
       }
     }
@@ -181,32 +175,52 @@ export class UserMonthlyReportsComponent implements OnChanges {
     spans.forEach(span => {
       const match = span.innerHTML.match(/^\d{1,2}/);
       if (match && match[0] === day) {
-        if (this.hoursReportedApproved(date)) span.style.backgroundColor = '#75e56d';
-        else span.style.backgroundColor = '#ff595e';
-        this.addReportedHoursIndicatorToCell(span, date);
+        let color;
+        if (this.hoursReportedApproved(date)) color = '#10b981';
+        else color = '#ff595e';
+        this.addReportedHoursIndicatorToCell(span, date, color);
       }
     });
   }
 
-  addReportedHoursIndicatorToCell(span: HTMLSpanElement, date: string): void {
+  addReportedHoursIndicatorToCell(span: HTMLSpanElement, date: string, color: string): void {
     const reports = this.timeReports[date];
     let totalHours = 0;
     let totalMinutes = 0;
+    let projectIndicatorsHtml = '';
     if (reports) {
+      const colorPlate = ['ee1e25', '3753a5', '6abd43', 'f6ec15', '7c287d', 'fcb812', 'ed197e', '3ac1c8', 'c0d62f', '008281'];
+      projectIndicatorsHtml += '<div>';
       for (const report of reports) {
         totalHours += report.hours;
         totalMinutes += report.minutes;
+        let chosenColor;
+        if (colorPlate.length > 0) {
+          const randomIndex = Math.floor(Math.random() * colorPlate.length);
+          chosenColor = colorPlate.splice(randomIndex, 1)[0];
+        } else {
+          chosenColor = '000000';
+        }
+        projectIndicatorsHtml += `
+          <div class="project-indicator" style="background-color: #${chosenColor};">
+            <span class="project-hours">${report.hours}h ${report.minutes}m</span>
+          </div>
+        `
       }
+      projectIndicatorsHtml += '</div>';
       totalHours += Math.floor(totalMinutes / 60);
     }
     const existingHoursIndicator = span.querySelector('.time-reported') as HTMLDivElement;
     if (existingHoursIndicator) {
       existingHoursIndicator.textContent = `${totalHours}/9`;
+      existingHoursIndicator.style.backgroundColor = color;
     } else {
       const newDiv = document.createElement('div');
       newDiv.className = 'time-reported';
       newDiv.textContent = `${totalHours}/9`;
+      newDiv.style.backgroundColor = color;
       span.appendChild(newDiv);
+      span.innerHTML += projectIndicatorsHtml;
     }
   }
 

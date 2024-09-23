@@ -1,16 +1,7 @@
-<!-- Max Neviantsev 27-08-2024 -->
 <header>
-  <HeaderComponent (tab)="tabSwitch($event)" />
+  <HeaderComponent></HeaderComponent>
 </header>
 
 <main>
-  @if (tab === 'projects') {
-  <ProjectsScreenComponent />
-  }
-  @if (tab === 'users') {
-  <UsersScreenComponent />
-  }
-  @if (tab === 'tasks') {
-  <TasksScreenComponent />
-  }
+  <router-outlet></router-outlet>
 </main>

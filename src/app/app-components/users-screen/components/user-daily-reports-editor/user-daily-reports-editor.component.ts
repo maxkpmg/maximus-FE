@@ -273,6 +273,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
     }
     this.projectsModel[index].hours = hoursRef.value;
     this.projectsModel[index].minutes = minutesRef.value;
+    this.calculateTotalTimeReported();
   }
 
   onMinusButtonClick(index: number): void {
@@ -288,6 +289,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
     }
     this.projectsModel[index].hours = hoursRef.value;
     this.projectsModel[index].minutes = minutesRef.value;
+    this.calculateTotalTimeReported();
   }
 
   onInput(input: any, index: number, isHours: boolean): void {

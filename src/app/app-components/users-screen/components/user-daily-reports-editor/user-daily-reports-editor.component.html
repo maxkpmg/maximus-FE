@@ -6,48 +6,40 @@
 			<div class="totalReportedHours">Total time: {{totalTime}}</div>
 		</div>
 		@if (!isLoading) {
+		<div class="projects-table-header">
+			<h6 style="width: 12vw;">Project</h6>
+			<h6 style="width: 5vw;">Hours</h6>
+			<h6 style="width: 5vw;">Minutes</h6>
+			<h6 style="width: 23vw;">Description</h6>
+		</div>
 		<div class="projectsSection">
 			@for (project of bookmarkedProjects; track project; let i = $index) {
 			<div class="project">
-				<div class="input-group input-group-sm mb-3" style="width: 15%">
-					<div class="input-group-prepend" style="width: 100%">
-						<span title={{project.name}} class="input-group-text" style="border-radius: 3px; overflow: hidden;">{{project.name}}</span>
-					</div>
-				</div>
+				<span title={{project.name}} class="input-group-text"
+					style="width: 12vw; overflow: hidden; direction: rtl;">{{project.name}}</span>
 
-				<button type="button" class="btn btn-light plus-minus-btn" style="margin-left: 2%"
-					(click)="onPlusButtonClick(i)">+</button>
-
-				<div class="input-group input-group-sm mb-3" style="width: 15%; margin-left: 2%;">
-					<div class="input-group-prepend" style="width: 70%">
-						<span class="input-group-text">Hours</span>
-					</div>
+				<div class="input-group flex-nowrap" style="width: 5vw; margin-left: 1vw;">
+					<button type="button" class="btn btn-light plus-minus-btn" style="width: 2vw;"
+						(click)="onPlusButtonClick(i)">+</button>
 					<input #h [(ngModel)]="projectsModel[i].hours" type="number" class="form-control" maxlength="2"
-						style="width: 30%" (input)="onInput($event, i, true)">
+						(input)="onInput($event, i, true)">
 				</div>
 
-				<div class="input-group input-group-sm mb-3" style="width: 15%; margin-left: 2%;">
-					<div class="input-group-prepend" style="width: 70%">
-						<span class="input-group-text">Minutes</span>
-					</div>
+				<div class="input-group flex-nowrap" style="width: 5vw; margin-left: 1vw;">
 					<input #m [(ngModel)]="projectsModel[i].minutes" type="number" class="form-control" maxlength="2"
-						style="width: 30%" (input)="onInput($event, i, false)">
+						(input)="onInput($event, i, false)">
+					<button type="button" class="btn btn-light plus-minus-btn" style="width: 2vw;"
+						(click)="onMinusButtonClick(i)">-</button>
 				</div>
 
-				<button type="button" class="btn btn-light plus-minus-btn" style="margin-left: 2%"
-					(click)="onMinusButtonClick(i)">-</button>
-
-				<div class="input-group input-group-sm mb-3" style="width: 36%; margin-left: 2%;">
-					<div class="input-group-prepend" style="width: 40%">
-						<span class="input-group-text">Description</span>
-					</div>
-					<input #d [(ngModel)]="projectsModel[i].description" type="text" class="form-control" style="width: 60%">
+				<div class="input-group input-group-sm mb-3" style="width: 23vw; margin-left: 1vw;">
+					<input #d [(ngModel)]="projectsModel[i].description" type="text" class="form-control" style="width: 100%">
 				</div>
 			</div>
 			}
 		</div>
 
-		<h3>More projects:</h3>
+		<h6>More projects:</h6>
 		<div class="dropdown">
 			<button type="button" class="btn btn-light projects-btn" data-bs-toggle="dropdown" aria-expanded="false"
 				data-bs-reference="parent" (click)="getProjects()">
@@ -66,7 +58,8 @@
 				</div>
 				}
 				@if (!isProjectsListLoading) {
-				<input class="form-control me-2" type="search" id="search" placeholder="Search project" aria-label="Search" (keyup)="filterProjects($event)">
+				<input class="form-control me-2" type="search" placeholder="Search project" aria-label="Search"
+					(keyup)="filterProjects($event)">
 				@for (project of filteredProjects; track project; let i = $index) {
 				<button id="dropdown-item" class="dropdown-item" style="border: 0" type="button"
 					(click)="onOtherProjectSelected(project)">{{project.name}}</button>

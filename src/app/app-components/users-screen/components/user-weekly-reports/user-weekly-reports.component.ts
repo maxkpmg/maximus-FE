@@ -115,7 +115,7 @@ export class UserWeeklyReportsComponent implements OnInit {
   }
 
   calcHeight(hours: number, minutes: number): object {
-    return { 'height': (hours + minutes / 60) * 7 + 'vh' };
+    return { 'height': (hours + minutes / 60) * 6.5 + 'vh' };
   }
 
   calcColor(): object {

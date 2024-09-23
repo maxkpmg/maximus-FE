@@ -5,7 +5,7 @@
   </aside>
 
   <div class="content">
-    <UserInfoComponent [user]="selectedUser" [isMonthlyOrWeeklyView]="isWeeklyOrMonthlyReports"
+    <UserInfoComponent [user]="selectedUser" [isMonthlyOrWeeklyView]="isWeeklyOrMonthlyReports" (toggleWeeklyMonthly)="toggleWeeklyMonthly()"
       (archive)="displayConfirmation($event)" (edit)="displayUserEditor($event)" (navigateWeeks)="navigateWeeks($event)" />
     @if (isWeeklyOrMonthlyReports) {
     <UserWeeklyReportsComponent #userWeeklyReports [user]="selectedUser" (openDailyReportEditor)="displayUserDailyReportEditor($event)" />
@@ -14,10 +14,6 @@
     <UserMonthlyReportsComponent #userMonthlyReports [user]="selectedUser" (openDailyReportEditor)="displayUserDailyReportEditor($event)" />
     }
   </div>
-
-  <aside>
-    <UserFilterComponent (onChangeView)="monthlyWeeklyViewController()" />
-  </aside>
 
   @if (isUserDailyReportsEditor) {
   <UserDailyReportsEditorComponent [user]="selectedUser" [data]="dailyReportEditorData"

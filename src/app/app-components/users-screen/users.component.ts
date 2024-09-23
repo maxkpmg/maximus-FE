@@ -7,7 +7,6 @@ import { UserInfoComponent } from './components/user-info/user-info.component';
 import { UserWeeklyReportsComponent } from './components/user-weekly-reports/user-weekly-reports.component';
 import { UserMonthlyReportsComponent } from './components/user-monthly-reports/user-monthly-reports.component';
 import { UserConfirmationComponent } from './components/user-confirmation/user-confirmation.component';
-import { UserFilterComponent } from './components/user-filter/user-filter.component';
 
 @Component({
   selector: 'UsersScreenComponent',
@@ -19,8 +18,7 @@ import { UserFilterComponent } from './components/user-filter/user-filter.compon
     UserMonthlyReportsComponent,
     UserEditorComponent,
     UserDailyReportsEditorComponent,
-    UserConfirmationComponent,
-    UserFilterComponent
+    UserConfirmationComponent
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
@@ -137,7 +135,7 @@ export class UsersScreenComponent {
     }
   }
 
-  monthlyWeeklyViewController(): void {
+  toggleWeeklyMonthly(): void {
     this.isWeeklyOrMonthlyReports = !this.isWeeklyOrMonthlyReports;
   }
 

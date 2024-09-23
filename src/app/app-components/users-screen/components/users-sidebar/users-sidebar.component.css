@@ -16,30 +16,35 @@
 }
 
 .search {
-  height: 5vh;
+  height: 4.5vh;
   font-size: 2vh;
   margin-top: 1vh;
   margin-bottom: 1vh;
+  letter-spacing: -0.02rem;
 }
 
 button, a {
   display: block;
-  height: 5vh;
+  height: 4.5vh;
   width: 100%;
   border-radius: 10px;
   background-color: transparent;
   margin-bottom: 0.5vh;
   font-size: 2vh;
-  font-weight: bold;
+  font-weight: 200;
   text-decoration: none;
   text-align: center;
   border: 0;
   color: white;
+  white-space: nowrap;
+  letter-spacing: -0.02rem;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 button.active {
   background-color: white;
   color: #4D4DFF;
+  font-weight: 400;
 }
 
 button:hover:not(.active) {
@@ -55,9 +60,9 @@ button:hover:not(.active) {
 }
 
 .options-opener-button {
-  height: 5vh;
-  width: 5vh;
-  border-radius: 2.5vh;
+  height: 4.5vh;
+  width: 4.5vh;
+  border-radius: 50%;
   background-color: transparent;
   border: 0;
   justify-content: center;
@@ -75,10 +80,11 @@ img {
 .archive-opener-button {
   display: flex;
   flex-direction: row;
-  height: 5vh;
+  height: 4.5vh;
   width: 100%;
   border-radius: 10px;
   border: 0;
+  font-weight: 400;
   text-align: center;
   align-items: center;
   justify-content: space-between;
@@ -99,20 +105,4 @@ img {
 
 .collapse button.active {
   color: #4D4DFF;
-}
-
-.loading {
-  width: 100%;
-  color: white;
-  font-size: 2vh;
-  font-weight: bold;
-  text-align: center;
-  justify-content: center;
-  margin-top: 10vh;
-}
-
-.error-img {
-  margin-top: 1vh;
-  height: 7vh;
-  width: 7vh;
 }

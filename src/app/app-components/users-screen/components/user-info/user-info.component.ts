@@ -11,6 +11,7 @@ import { User } from '../../../../interfaces';
 export class UserInfoComponent implements OnChanges {
   @Input() user: User;
   @Input() isMonthlyOrWeeklyView: boolean;
+  @Output() toggleWeeklyMonthly = new EventEmitter<void>();
   @Output() edit = new EventEmitter<User>();
   @Output() archive = new EventEmitter<{ type: string, id: number }>();
   @Output() navigateWeeks = new EventEmitter< { sunday: string, monday: string, tuesday: string, wednesday: string, thursday: string, friday: string, saturday: string }>();
@@ -65,5 +66,20 @@ export class UserInfoComponent implements OnChanges {
       friday: `${String(friday.getDate()).padStart(2, '0')}/${String(friday.getMonth() + 1).padStart(2, '0')}/${friday.getFullYear()}`,
       saturday: `${String(saturday.getDate()).padStart(2, '0')}/${String(saturday.getMonth() + 1).padStart(2, '0')}/${saturday.getFullYear()}`
     }
+  }
+
+  onButtonGroupClick($event: any): void {
+    let clickedElement = $event.target || $event.srcElement;
+    if (clickedElement.nodeName === "BUTTON") {
+      let isCertainButtonAlreadyActive = clickedElement.parentElement.querySelector(".active");
+      if (isCertainButtonAlreadyActive) {
+        isCertainButtonAlreadyActive.classList.remove("active");
+      }
+      clickedElement.className += " active";
+    }
+  }
+
+  onToggleWeeklyMonthly() {
+    this.toggleWeeklyMonthly.emit();
   }
 }

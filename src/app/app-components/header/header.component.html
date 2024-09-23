@@ -1,9 +1,9 @@
 <div class="container">
-	<img class="logo" src="../../../assets/logo.jpg">
-	<h1>Maximus</h1>
-	<nav (click)="onButtonGroupClick($event)">
-		<button class="btn active" type="button" (click)="onButtonClick($event, 'users')">Users</button>
-		<button class="btn" type="button" (click)="onButtonClick($event, 'projects')">Projects</button>
-		<button class="btn" type="button" (click)="onButtonClick($event, 'tasks')">Tasks</button>
-	</nav>
+  <img class="logo" src="../../../assets/logo.jpg">
+  <h1>Maximus</h1>
+  <nav>
+    <button class="btn" routerLink="/users" routerLinkActive="active">Users</button>
+    <button class="btn" routerLink="/projects" routerLinkActive="active">Projects</button>
+    <button class="btn" routerLink="/tasks" routerLinkActive="active">Tasks</button>
+  </nav>
 </div>

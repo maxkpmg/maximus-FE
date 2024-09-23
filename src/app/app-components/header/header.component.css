@@ -19,10 +19,10 @@
 }
 
 h1 {
-  font-size: 4.5vh;
+  font-size: 3.8vh;
   color: dodgerblue;
-  font-weight: 500;
-  letter-spacing: -0.125rem;
+  font-weight: 300;
+  letter-spacing: -0.08rem;
   font-family: "Segoe UI";
   margin-right: 0.5vw;
 }
@@ -36,26 +36,23 @@ nav {
 }
 
 nav button {
-  width: 6.5vw;
-  color: #4D4DFF;
+  width: 4vw;
+  height: 4vh;
+  padding: 0;
+  font-size: 2vh;
+  color: grey;
   background-color: transparent;
   margin-right: 0.5vw;
   border-radius: 10px;
+  border: 0;
+  transition: background-color 0.3s;
 }
 
 nav button:hover {
-  background-color: lightgrey;
+  background-color: ghostwhite;
 }
 
 nav button.active {
-  color: white;
-  border-color: #4D4DFF;
-  background-color: #4D4DFF;
+  color: #4D4DFF;
   font-weight: 600;
-}
-
-button {
-  height: 4.5vh;
-  padding: 0;
-  font-size: 2vh;
 }

@@ -1,4 +1,5 @@
-<div class="container">
+<div>
+<div class="user-info">
 	@if (user.fname) {
 	<div class="name-container">
 		<div class="dropdown">
@@ -13,7 +14,6 @@
 		</div>
 		<div class="user-name">{{user.fname}} {{user.lname}}</div>
 	</div>
-
 	<div class="navigationContainer">
 		@if (isMonthlyOrWeeklyView) {
 		<button class="btn btn-light left-button" (click)="onNavigateWeeks(false)">
@@ -27,10 +27,15 @@
 		</button>
 		}
 	</div>
-
 	<div class="detailsContainer">
 		<a [href]="'mailto:' + user.email">{{user.email}}</a>
 		<p>{{user.phone}}</p>
 	</div>
 	}
+</div>
+
+<div class="view-tabs" (click)="onButtonGroupClick($event)">
+	<button class="view-tab active" data-view="monthly" (click)="onToggleWeeklyMonthly()">Monthly</button>
+	<button class="view-tab" data-view="weekly" (click)="onToggleWeeklyMonthly()">Weekly</button>
+	</div>
 </div>

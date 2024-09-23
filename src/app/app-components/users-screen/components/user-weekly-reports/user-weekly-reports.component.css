@@ -1,9 +1,9 @@
 .container {
-  height: 80vh;
+  height: 73vh;
   width: 100%;
   background-color: white;
-  box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.4);
-  border-radius: 20px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
   padding: 1vh;
   padding-left: 1.5%;
   padding-right: 1.5%;
@@ -17,13 +17,17 @@
 }
 
 td {
-  height: 68vh;
+  height: 61vh;
 }
 
 th {
   height: 7vh;
   padding: 0.5vh;
   justify-content: center;
+}
+
+tbody td {
+  border-style: none;
 }
 
 .thBackground {
@@ -83,7 +87,8 @@ th {
   border-radius: 3px;
   margin-bottom: 2px;
   padding-left: 2px;
-  padding-right: 2px
+  padding-right: 2px;
+  direction: rtl;
 }
 
 .no-reports {
@@ -104,7 +109,7 @@ th {
 
 .nineHoursLine {
   position: absolute;
-  top: 70.5vh;
+  top: 65.5vh;
   width: 97.5%;
   display: flex;
   align-items: center;
