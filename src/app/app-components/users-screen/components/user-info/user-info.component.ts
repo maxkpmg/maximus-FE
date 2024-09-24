@@ -50,13 +50,20 @@ export class UserInfoComponent implements OnChanges {
     const currFirstDay = this.week.sunday
       ? new Date(Number(this.week.sunday.slice(6, 10)), Number(this.week.sunday.slice(3, 5)) - 1, Number(this.week.sunday.slice(0, 2)))
       : new Date();
-    const sunday = new Date(currFirstDay.setDate(currFirstDay.getDate() - currFirstDay.getDay() + diff));
-    const monday = new Date(currFirstDay.setDate(sunday.getDate() + 1));
-    const tuesday = new Date(currFirstDay.setDate(sunday.getDate() + 2));
-    const wednesday = new Date(currFirstDay.setDate(sunday.getDate() + 3));
-    const thursday = new Date(currFirstDay.setDate(sunday.getDate() + 4));
-    const friday = new Date(currFirstDay.setDate(sunday.getDate() + 5));
-    const saturday = new Date(currFirstDay.setDate(sunday.getDate() + 6));
+    const sunday = new Date(currFirstDay);
+    sunday.setDate(sunday.getDate() - sunday.getDay() + diff);
+    const monday = new Date(sunday);
+    monday.setDate(sunday.getDate() + 1);
+    const tuesday = new Date(sunday);
+    tuesday.setDate(sunday.getDate() + 2);
+    const wednesday = new Date(sunday);
+    wednesday.setDate(sunday.getDate() + 3);
+    const thursday = new Date(sunday);
+    thursday.setDate(sunday.getDate() + 4);
+    const friday = new Date(sunday);
+    friday.setDate(sunday.getDate() + 5);
+    const saturday = new Date(sunday);
+    saturday.setDate(sunday.getDate() + 6);
     this.week = {
       sunday: `${String(sunday.getDate()).padStart(2, '0')}/${String(sunday.getMonth() + 1).padStart(2, '0')}/${sunday.getFullYear()}`,
       monday: `${String(monday.getDate()).padStart(2, '0')}/${String(monday.getMonth() + 1).padStart(2, '0')}/${monday.getFullYear()}`,

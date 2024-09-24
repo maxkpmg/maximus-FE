@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectorRef, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectorRef, SimpleChanges, OnChanges } from '@angular/core';
 import { Project, TimeReport, User } from '../../../../interfaces';
 import { CommonModule } from '@angular/common';
 import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinner.component';
@@ -10,15 +10,15 @@ import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinne
   templateUrl: './user-weekly-reports.component.html',
   styleUrl: './user-weekly-reports.component.css',
 })
-export class UserWeeklyReportsComponent implements OnInit {
+export class UserWeeklyReportsComponent implements OnChanges {
   @Input() user: User;
+  @Input() projects: Project[];
   @Output() openDailyReportEditor = new EventEmitter<{ date: string, day: string, reports: TimeReport[] }>();
-  projects: Project[] = [];
   fetchedWeeks: string[] = [];
   timeReports: { [key: string]: TimeReport[]; } = {}; // allow dynamic values to be added
   today: Date = new Date();
   week = { sunday: '', monday: '', tuesday: '', wednesday: '', thursday: '', friday: '', saturday: '' };
-  isLoading: boolean = true;
+  isLoading: boolean = false;
   isError: boolean = false;
   isNoUserSelected: boolean = true;
   colorsArray: { [key: string]: object[]; } = {};
@@ -27,25 +27,19 @@ export class UserWeeklyReportsComponent implements OnInit {
 
   constructor(private cdr: ChangeDetectorRef) { }
 
-  async ngOnInit(): Promise<void> {
-    try {
-      const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-projects', {
-        method: "POST",
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ onlyActiveProjects: false })
-      });
-      if (response.ok) {
-        this.projects = await response.json();
-      }
-    } catch (e) {
-      this.isError = true;
-      console.error('Error: ', e);
+  ngOnChanges(changes: SimpleChanges): void {
+    if (this.user.id !== -1) {
+      this.fetchedWeeks = [];
+      this.timeReports = {};
+      this.colorsArray = {};
+      this.projectNamesArray = {};
+      this.today.setHours(0, 0, 0, 0);
     }
   }
 
   async getTimeReports(): Promise<void> {
     const week = this.week;
-    if (this.fetchedWeeks.includes(week.sunday)) {
+    if (week.sunday === '' || this.fetchedWeeks.includes(week.sunday)) {
       return;
     }
     try {
@@ -103,10 +97,7 @@ export class UserWeeklyReportsComponent implements OnInit {
   }
 
   setTimeReports(timeReports: TimeReport[], date: string): void {
-    console.log(timeReports)
-    console.log(1)
     this.timeReports[date] = timeReports;
-    console.log(1)
     this.cdr.detectChanges();
   }
 
@@ -119,28 +110,41 @@ export class UserWeeklyReportsComponent implements OnInit {
   }
 
   calcColor(): object {
-    const colors = ['#711DB0', '#C21292', '#EF4040', '#FFA732', '#DC143C', '#4D4DFF'];
-    const randomNum = Math.floor(Math.random() * 6);
-    return { 'backgroundColor': colors[randomNum] };
+    const colors = ['#ee1e25', '#3753a5', '#6abd43', '#008281', '#7c287d', '#3ac1c8', '#ed197e', '#fcb812', '#c0d62f', '#f6ec15'];
+    const randomNum = Math.floor(Math.random() * 10);
+    const textColor = randomNum > 6 ? '#343434' : '#ffffff';
+    return { 'backgroundColor': colors[randomNum], 'color': textColor };
   }
 
   styleDayHeadings(): void {
     const cells = document.querySelectorAll<HTMLButtonElement>('.thBackground');
+    if (cells) {
     type DayOfWeek = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
     const daysOfWeek: DayOfWeek[] = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
     for (let i = 0; i < daysOfWeek.length; i++) {
+      const approveBlock = cells[i].querySelector<HTMLDivElement>('.approveBlock');
       const day = daysOfWeek[i];
       const date = this.week[day];
       cells[i].disabled = false;
       if (this.isFutureDate(date) || i >= 5) {
         cells[i].disabled = true;
-        cells[i].style.backgroundColor = 'gainsboro';
+        if (approveBlock) {
+          approveBlock.style.background = 'gainsboro';
+          approveBlock.innerText = '';
+        }
       } else if (this.hoursReportedApproved(date)) {
-        cells[i].style.backgroundColor = '#75e56d';
+        if (approveBlock) {
+          approveBlock.style.background = '#10b981';
+          approveBlock.innerText = 'APPROVED';
+        }
       } else {
-        cells[i].style.backgroundColor = '#ff595e';
+        if (approveBlock) {
+          approveBlock.style.background = '#ff595e';
+          approveBlock.innerText = 'MISSING';
+        }
       }
     }
+  }
   }
 
   hoursReportedApproved(date: string): boolean {

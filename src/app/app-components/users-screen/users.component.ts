@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { TimeReport, User } from '../../interfaces';
+import { Project, TimeReport, User } from '../../interfaces';
 import { UserEditorComponent } from './components/user-editor/user-editor.component';
 import { UserDailyReportsEditorComponent } from './components/user-daily-reports-editor/user-daily-reports-editor.component';
 import { UsersSidebarComponent } from './components/users-sidebar/users-sidebar.component';
@@ -24,6 +24,7 @@ import { UserConfirmationComponent } from './components/user-confirmation/user-c
   styleUrl: './users.component.css'
 })
 export class UsersScreenComponent {
+  projects: Project[] = [];
   activeUsers: User[] = [];
   archivedUsers: User[] = [];
   selectedUser: User = { id: -1, fname: '', lname: '', phone: '', email: '', active: false };
@@ -57,6 +58,14 @@ export class UsersScreenComponent {
         }
         this.activeUsers = activeUsers;
         this.archivedUsers = archivedUsers;
+      }
+      const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-projects', {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ onlyActiveProjects: false })
+      });
+      if (response.ok) {
+        this.projects = await response.json();
       }
     } catch (e) {
       console.error('Error: ', e);

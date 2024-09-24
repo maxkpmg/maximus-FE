@@ -18,6 +18,7 @@
 
 td {
   height: 61vh;
+  background-color: snow;
 }
 
 th {
@@ -32,30 +33,32 @@ tbody td {
 
 .thBackground {
   height: 6vh;
-  width: 66%;
-  margin-left: 16.5%;
-  padding: 0.5vh;
-  border-radius: 5px;
+  width: 80%;
+  margin-left: 10%;
   border: 0;
-  box-shadow: 0 0px 6px 0 rgba(0, 0, 0, 0.4);
+  background-color: white;
 }
 
 .weekDay {
   height: 50%;
-  width: 100%;
-  font-size: 1.8vh;
-  font-weight: 600;
-  color: white;
+  font-size: 1.7vh;
+  font-weight: 500;
+  color: #343434;
   text-align: center;
+  border-radius: 3px;
+  letter-spacing: -0.02rem;
 }
 
-.weekDate {
+.approveBlock {
   height: 50%;
-  width: 100%;
-  font-size: 1.4vh;
-  font-weight: normal;
+  font-size: 1.5vh;
+  font-weight: bold;
   text-align: center;
-  color: rgb(255, 255, 255, 0.8)
+  color: white;
+  border-radius: 3px;
+  padding: 3px;
+  width: 100%;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
 }
 
 .reportBlock {
@@ -69,9 +72,10 @@ tbody td {
   display: flex;
   flex-direction: column;
   border-radius: 3px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+  box-shadow: inset 0 0 2px 0px rgba(0, 0, 0, 0.4);
+  background-color: white;
   overflow: scroll;
-  padding: 0.5vh;
+  padding: 0.6vh;
   border: 0;
 }
 
@@ -80,15 +84,14 @@ tbody td {
 }
 
 .reportBlockContent span {
+  max-width: '100%';
   font-weight: 600;
   font-size: 1.5vh;
-  color: #4D4DFF;
-  background-color: white;
   border-radius: 3px;
   margin-bottom: 2px;
-  padding-left: 2px;
-  padding-right: 2px;
+  padding: 3px;
   direction: rtl;
+  white-space: nowrap;
 }
 
 .no-reports {

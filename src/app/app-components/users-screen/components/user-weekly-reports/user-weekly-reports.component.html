@@ -5,44 +5,44 @@
 			<tr>
 				<th scope="col" style="width:14.28%">
 					<button class="thBackground" (click)="openDailyReportWindow(week.sunday, 'Sunday')">
-						<div class="weekDay">Sunday</div>
-						<div class="weekDate">{{week.sunday}}</div>
+						<div class="weekDay">Sunday {{week.sunday.slice(0,5)}}</div>
+						<div class="approveBlock"></div>
 					</button>
 				</th>
 				<th scope="col" style="width:14.28%">
 					<button class="thBackground" (click)="openDailyReportWindow(week.monday, 'Monday')">
-						<div class="weekDay">Monday</div>
-						<div class="weekDate">{{week.monday}}</div>
+						<div class="weekDay">Monday {{week.monday.slice(0,5)}}</div>
+						<div class="approveBlock"></div>
 					</button>
 				</th>
 				<th scope="col" style="width:14.28%">
 					<button class="thBackground" (click)="openDailyReportWindow(week.tuesday, 'Tuesday')">
-						<div class="weekDay">Tuesday</div>
-						<div class="weekDate">{{week.tuesday}}</div>
+						<div class="weekDay">Tuesday {{week.tuesday.slice(0,5)}}</div>
+						<div class="approveBlock"></div>
 					</button>
 				</th>
 				<th scope="col" style="width:14.28%">
 					<button class="thBackground" (click)="openDailyReportWindow(week.wednesday, 'Wednesday')">
-						<div class="weekDay">Wednesday</div>
-						<div class="weekDate">{{week.wednesday}}</div>
+						<div class="weekDay">Wednesday {{week.wednesday.slice(0,5)}}</div>
+						<div class="approveBlock"></div>
 					</button>
 				</th>
 				<th scope="col" style="width:14.28%">
 					<button class="thBackground" (click)="openDailyReportWindow(week.thursday, 'Thursday')">
-						<div class="weekDay">Thursday</div>
-						<div class="weekDate">{{week.thursday}}</div>
+						<div class="weekDay">Thursday {{week.thursday.slice(0,5)}}</div>
+						<div class="approveBlock"></div>
 					</button>
 				</th>
 				<th scope="col" style="width:14.28%">
 					<button class="thBackground" disabled="true">
-						<div class="weekDay">Friday</div>
-						<div class="weekDate">{{week.friday}}</div>
+						<div class="weekDay">Friday {{week.friday.slice(0,5)}}</div>
+						<div class="approveBlock"></div>
 					</button>
 				</th>
 				<th scope="col" style="width:14.28%">
 					<button class="thBackground" disabled="true">
-						<div class="weekDay">Saturday</div>
-						<div class="weekDate">{{week.saturday}}</div>
+						<div class="weekDay">Saturday {{week.saturday.slice(0,5)}}</div>
+						<div class="approveBlock"></div>
 					</button>
 				</th>
 			</tr>
@@ -52,9 +52,9 @@
 				<td>
 					@for (report of timeReports[week.sunday]; track report; let i = $index) {
 					<div class="reportBlock" [ngStyle]="calcHeight(report.hours, report.minutes)" (click)="openDailyReportWindow(week.sunday, 'Sunday')">
-						<button class="reportBlockContent" [ngStyle]="this.colorsArray[week.sunday][i]">
-							<span>{{ projectNamesArray[week.sunday][i] }}</span>
-							<div><span>{{report.hours + 'h'}} {{report.minutes + 'm'}}</span></div>
+						<button class="reportBlockContent">
+							<span [ngStyle]="this.colorsArray[week.sunday][i]">{{ projectNamesArray[week.sunday][i] }}</span>
+							<div><span [ngStyle]="this.colorsArray[week.sunday][i]">{{report.hours + 'h'}} {{report.minutes + 'm'}}</span></div>
 						</button>
 					</div>
 					}
@@ -62,9 +62,9 @@
 				<td>
 					@for (report of timeReports[week.monday]; track report; let i = $index) {
 					<div class="reportBlock" [ngStyle]="calcHeight(report.hours, report.minutes)" (click)="openDailyReportWindow(week.monday, 'Monday')">
-						<button class="reportBlockContent" [ngStyle]="this.colorsArray[week.monday][i]">
-							<span>{{ projectNamesArray[week.monday][i] }}</span>
-							<div><span>{{report.hours + 'h'}} {{report.minutes + 'm'}}</span></div>
+						<button class="reportBlockContent">
+							<span [ngStyle]="this.colorsArray[week.monday][i]">{{ projectNamesArray[week.monday][i] }}</span>
+							<div><span [ngStyle]="this.colorsArray[week.monday][i]">{{report.hours + 'h'}} {{report.minutes + 'm'}}</span></div>
 						</button>
 					</div>
 					}
@@ -72,9 +72,9 @@
 				<td>
 					@for (report of timeReports[week.tuesday]; track report; let i = $index) {
 					<div class="reportBlock" [ngStyle]="calcHeight(report.hours, report.minutes)" (click)="openDailyReportWindow(week.tuesday, 'Tuesday')">
-						<button class="reportBlockContent" [ngStyle]="this.colorsArray[week.tuesday][i]">
-							<span>{{ projectNamesArray[week.tuesday][i] }}</span>
-							<div><span>{{report.hours + 'h'}} {{report.minutes + 'm'}}</span></div>
+						<button class="reportBlockContent">
+							<span [ngStyle]="this.colorsArray[week.tuesday][i]">{{ projectNamesArray[week.tuesday][i] }}</span>
+							<div><span [ngStyle]="this.colorsArray[week.tuesday][i]">{{report.hours + 'h'}} {{report.minutes + 'm'}}</span></div>
 						</button>
 					</div>
 					}
@@ -82,9 +82,9 @@
 				<td>
 					@for (report of timeReports[week.wednesday]; track report; let i = $index) {
 					<div class="reportBlock" [ngStyle]="calcHeight(report.hours, report.minutes)" (click)="openDailyReportWindow(week.wednesday, 'Wednesday')">
-						<button class="reportBlockContent" [ngStyle]="this.colorsArray[week.wednesday][i]">
-							<span>{{ projectNamesArray[week.wednesday][i] }}</span>
-							<div><span>{{report.hours + 'h'}} {{report.minutes + 'm'}}</span></div>
+						<button class="reportBlockContent">
+							<span [ngStyle]="this.colorsArray[week.wednesday][i]">{{ projectNamesArray[week.wednesday][i] }}</span>
+							<div><span [ngStyle]="this.colorsArray[week.wednesday][i]">{{report.hours + 'h'}} {{report.minutes + 'm'}}</span></div>
 						</button>
 					</div>
 					}
@@ -92,9 +92,9 @@
 				<td>
 					@for (report of timeReports[week.thursday]; track report; let i = $index) {
 					<div class="reportBlock" [ngStyle]="calcHeight(report.hours, report.minutes)" (click)="openDailyReportWindow(week.thursday, 'Thursday')">
-						<button class="reportBlockContent" [ngStyle]="this.colorsArray[week.thursday][i]">
-							<span>{{ projectNamesArray[week.thursday][i] }}</span>
-							<div><span>{{report.hours + 'h'}} {{report.minutes + 'm'}}</span></div>
+						<button class="reportBlockContent">
+							<span [ngStyle]="this.colorsArray[week.thursday][i]">{{ projectNamesArray[week.thursday][i] }}</span>
+							<div><span [ngStyle]="this.colorsArray[week.thursday][i]">{{report.hours + 'h'}} {{report.minutes + 'm'}}</span></div>
 						</button>
 					</div>
 					}
