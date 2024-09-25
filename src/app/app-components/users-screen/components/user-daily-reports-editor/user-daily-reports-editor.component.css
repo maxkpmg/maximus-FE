@@ -38,6 +38,7 @@
   padding: .375rem .75rem;
   font-size: 1rem;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 h2 {

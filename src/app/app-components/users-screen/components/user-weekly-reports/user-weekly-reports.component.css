@@ -33,8 +33,10 @@ tbody td {
 
 .thBackground {
   height: 6vh;
-  width: 80%;
-  margin-left: 10%;
+  width: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
   border: 0;
   background-color: white;
 }
@@ -57,7 +59,7 @@ tbody td {
   color: white;
   border-radius: 3px;
   padding: 3px;
-  width: 100%;
+  width: 6vw;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
 }
 

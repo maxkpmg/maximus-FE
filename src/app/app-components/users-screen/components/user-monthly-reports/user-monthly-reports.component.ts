@@ -189,20 +189,14 @@ export class UserMonthlyReportsComponent implements OnChanges {
     let totalMinutes = 0;
     let projectIndicatorsHtml = '';
     if (reports) {
-      const colorPlate = ['ee1e25', '3753a5', '6abd43', 'f6ec15', '7c287d', 'fcb812', 'ed197e', '3ac1c8', 'c0d62f', '008281'];
       projectIndicatorsHtml += '<div>';
       for (const report of reports) {
         totalHours += report.hours;
         totalMinutes += report.minutes;
-        let chosenColor;
-        if (colorPlate.length > 0) {
-          const randomIndex = Math.floor(Math.random() * colorPlate.length);
-          chosenColor = colorPlate.splice(randomIndex, 1)[0];
-        } else {
-          chosenColor = '000000';
-        }
+        const colors = ['#fccb42', '#a0daa8', '#e0b58a', '#fdac53', '#d2386c', '#01a1f7', '#e9897d', '#00a170', '#004773', '#0172b6', '#949597', '#e80265', '#dc143c', '#006a72', '#80027d'];
+        const reminder = report.id % 15;
         projectIndicatorsHtml += `
-          <div class="project-indicator" style="background-color: #${chosenColor};">
+          <div class="project-indicator" style="background-color: ${colors[reminder]};">
             <span class="project-hours">${report.hours}h ${report.minutes}m</span>
           </div>
         `

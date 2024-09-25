@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectorRef, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, Input, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
 import { Project, TimeReport, User } from '../../../../interfaces';
 import { CommonModule } from '@angular/common';
 import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinner.component';
@@ -24,8 +24,6 @@ export class UserWeeklyReportsComponent implements OnChanges {
   colorsArray: { [key: string]: object[]; } = {};
   projectNamesArray: { [key: string]: string[]; } = {};
 
-
-  constructor(private cdr: ChangeDetectorRef) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (this.user.id !== -1) {
@@ -55,21 +53,15 @@ export class UserWeeklyReportsComponent implements OnChanges {
       if (response.ok) {
         const data = await response.json();
         this.fetchedWeeks.push(week.sunday);
-        for (let i = 0; i < data.length; i++) {
-          // push time report
-          if (!this.timeReports[data[i].date]) {
-            this.timeReports[data[i].date] = [];
-          }
-          this.timeReports[data[i].date].push(data[i]);
-          // push random color
-          if (!this.colorsArray[data[i].date])
-            this.colorsArray[data[i].date] = [];
-          this.colorsArray[data[i].date].push(this.calcColor());
-          // push the project name
-          if (!this.projectNamesArray[data[i].date])
-            this.projectNamesArray[data[i].date] = [];
-          const projectName = this.findProjectById(data[i].project_id)?.name || 'Unknown Project';
-          this.projectNamesArray[data[i].date].push(projectName);
+        for (const report of data) {
+          const date = report.date;
+          if (!this.timeReports[date]) this.timeReports[date] = [];
+          if (!this.colorsArray[date]) this.colorsArray[date] = [];
+          if (!this.projectNamesArray[date]) this.projectNamesArray[date] = [];
+          this.timeReports[date].push(report);
+          this.colorsArray[date].push(this.calcColor(report.project_id));
+          const projectName = this.findProjectById(report.project_id)?.name || 'Unknown Project';
+          this.projectNamesArray[date].push(projectName);
         }
         this.isLoading = this.isError = false;
       }
@@ -96,9 +88,16 @@ export class UserWeeklyReportsComponent implements OnChanges {
     setTimeout(() => this.styleDayHeadings(), 10);
   }
 
-  setTimeReports(timeReports: TimeReport[], date: string): void {
-    this.timeReports[date] = timeReports;
-    this.cdr.detectChanges();
+  setTimeReports(data: TimeReport[], date: string): void {
+    this.timeReports[date] = [];
+    this.colorsArray[date] = [];
+    this.projectNamesArray[date] = [];
+    for (const report of data) {
+      this.timeReports[date].push(report);
+      this.colorsArray[date].push(this.calcColor(report.project_id));
+      const projectName = this.findProjectById(report.project_id)?.name || 'Unknown Project';
+      this.projectNamesArray[date].push(projectName);
+    }
   }
 
   findProjectById(projectId: number): Project | undefined {
@@ -109,42 +108,42 @@ export class UserWeeklyReportsComponent implements OnChanges {
     return { 'height': (hours + minutes / 60) * 6.5 + 'vh' };
   }
 
-  calcColor(): object {
-    const colors = ['#ee1e25', '#3753a5', '#6abd43', '#008281', '#7c287d', '#3ac1c8', '#ed197e', '#fcb812', '#c0d62f', '#f6ec15'];
-    const randomNum = Math.floor(Math.random() * 10);
-    const textColor = randomNum > 6 ? '#343434' : '#ffffff';
-    return { 'backgroundColor': colors[randomNum], 'color': textColor };
+  calcColor(projectId: number): object {
+    const colors = ['#fccb42', '#a0daa8', '#e0b58a', '#fdac53', '#d2386c', '#01a1f7', '#e9897d', '#00a170', '#004773', '#0172b6', '#949597', '#e80265', '#dc143c', '#006a72', '#80027d'];
+    const reminder = projectId % 15;
+    const textColor = reminder < 4 ? '#343434' : '#ffffff';
+    return { 'backgroundColor': colors[reminder], 'color': textColor };
   }
 
   styleDayHeadings(): void {
     const cells = document.querySelectorAll<HTMLButtonElement>('.thBackground');
     if (cells) {
-    type DayOfWeek = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
-    const daysOfWeek: DayOfWeek[] = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    for (let i = 0; i < daysOfWeek.length; i++) {
-      const approveBlock = cells[i].querySelector<HTMLDivElement>('.approveBlock');
-      const day = daysOfWeek[i];
-      const date = this.week[day];
-      cells[i].disabled = false;
-      if (this.isFutureDate(date) || i >= 5) {
-        cells[i].disabled = true;
-        if (approveBlock) {
-          approveBlock.style.background = 'gainsboro';
-          approveBlock.innerText = '';
-        }
-      } else if (this.hoursReportedApproved(date)) {
-        if (approveBlock) {
-          approveBlock.style.background = '#10b981';
-          approveBlock.innerText = 'APPROVED';
-        }
-      } else {
-        if (approveBlock) {
-          approveBlock.style.background = '#ff595e';
-          approveBlock.innerText = 'MISSING';
+      type DayOfWeek = 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
+      const daysOfWeek: DayOfWeek[] = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+      for (let i = 0; i < daysOfWeek.length; i++) {
+        const approveBlock = cells[i].querySelector<HTMLDivElement>('.approveBlock');
+        const day = daysOfWeek[i];
+        const date = this.week[day];
+        cells[i].disabled = false;
+        if (this.isFutureDate(date) || i >= 5) {
+          cells[i].disabled = true;
+          if (approveBlock) {
+            approveBlock.style.background = 'gainsboro';
+            approveBlock.innerText = '';
+          }
+        } else if (this.hoursReportedApproved(date)) {
+          if (approveBlock) {
+            approveBlock.style.background = '#10b981';
+            approveBlock.innerText = 'APPROVED';
+          }
+        } else {
+          if (approveBlock) {
+            approveBlock.style.background = '#ff595e';
+            approveBlock.innerText = 'MISSING';
+          }
         }
       }
     }
-  }
   }
 
   hoursReportedApproved(date: string): boolean {
