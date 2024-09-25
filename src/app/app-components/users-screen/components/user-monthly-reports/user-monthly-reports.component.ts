@@ -194,7 +194,7 @@ export class UserMonthlyReportsComponent implements OnChanges {
         totalHours += report.hours;
         totalMinutes += report.minutes;
         const colors = ['#fccb42', '#a0daa8', '#e0b58a', '#fdac53', '#d2386c', '#01a1f7', '#e9897d', '#00a170', '#004773', '#0172b6', '#949597', '#e80265', '#dc143c', '#006a72', '#80027d'];
-        const reminder = report.id % 15;
+        const reminder = report.project_id % 15;
         projectIndicatorsHtml += `
           <div class="project-indicator" style="background-color: ${colors[reminder]};">
             <span class="project-hours">${report.hours}h ${report.minutes}m</span>
@@ -215,6 +215,7 @@ export class UserMonthlyReportsComponent implements OnChanges {
       newDiv.style.backgroundColor = color;
       span.appendChild(newDiv);
     }
+    span.querySelectorAll('.project-indicator').forEach(element => element.remove()); // remove existing indicators to prevent duplicates
     span.innerHTML += projectIndicatorsHtml;
   }
 
