@@ -50,8 +50,8 @@ export class UsersScreenComponent {
       });
       if (usersResponse.ok) {
         const users = await usersResponse.json();
-        const activeUsers = [];
-        const archivedUsers = [];
+        const activeUsers: User[] = [];
+        const archivedUsers: User[] = [];
         for (let i = 0; i < users.length; i++) {
           if (users[i].active) activeUsers.push(users[i]);
           else archivedUsers.push(users[i]);

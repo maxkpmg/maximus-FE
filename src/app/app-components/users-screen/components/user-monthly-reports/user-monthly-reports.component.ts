@@ -163,19 +163,23 @@ export class UserMonthlyReportsComponent implements OnChanges {
       }
     }
   }
-
+  // set the time reports needed to be displayed in that month
   setTimeReports(timeReports: TimeReport[], date: string): void {
     this.timeReports[date] = timeReports;
     this.cdr.detectChanges();
   }
 
   updateCellColor(date: string): void {
-    const day = date.slice(0, 2);
-    const spans = document.querySelectorAll<HTMLSpanElement>('td > span');
+    let day = date.slice(0, 2); // get day value
+    if (day.startsWith('0')) // if single digit date cut the 0
+      day = day[1];
+    const spans = document.querySelectorAll<HTMLSpanElement>('td > span'); // get calendar cells
     spans.forEach(span => {
+      if (span.classList.contains('p-disabled')) // ignore disabled cells
+        return;
       const match = span.innerHTML.match(/^\d{1,2}/);
-      if (match && match[0] === day) {
-        let color;
+      if (match && match[0] === day) { // if cell date equals date input - that's the cell
+        let color: string;
         if (this.hoursReportedApproved(date)) color = '#10b981';
         else color = '#ff595e';
         this.addReportedHoursIndicatorToCell(span, date, color);
@@ -183,6 +187,7 @@ export class UserMonthlyReportsComponent implements OnChanges {
     });
   }
 
+  // add the little horizontal candles to the reported calendar cells
   addReportedHoursIndicatorToCell(span: HTMLSpanElement, date: string, color: string): void {
     const reports = this.timeReports[date];
     let totalHours = 0;
@@ -219,6 +224,7 @@ export class UserMonthlyReportsComponent implements OnChanges {
     span.innerHTML += projectIndicatorsHtml;
   }
 
+  // check if at least 9 hours were reported in the given date
   hoursReportedApproved(date: string): boolean {
     if (!this.timeReports[date])
       return false;
