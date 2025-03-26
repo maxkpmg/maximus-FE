@@ -81,7 +81,7 @@ export class ProjectFilterComponent implements OnChanges {
     for (let i = 0; i < reports.length; i++) {
       const rowData: string[] = [
         reports[i].date,
-        reports[i].fname,
+        `${reports[i].fname} ${reports[i].lname}`,
         `${reports[i].hours}H ${reports[i].minutes}M`,
         reports[i].description,
       ];
