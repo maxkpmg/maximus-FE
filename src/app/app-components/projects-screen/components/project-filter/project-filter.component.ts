@@ -74,33 +74,50 @@ export class ProjectFilterComponent implements OnChanges {
 
   onExport(): void {
     const reports = this.filteredReports;
-    const ExcelData: (string | Date)[][] = [['Date', 'Reported Time', 'Description', 'Name', 'Total']];
+    const ExcelData: (string | Date | Number)[][] = [['Date', 'Reported Time', 'Description', 'Name', 'Total']];
     
     for (let i = 0; i < reports.length; i++) {
-      const reportDate = reports[i].date.split('/');
-      const excelDate = new Date(+reportDate[2], +reportDate[1] - 1, +reportDate[0]);
+      // Split the date string to extract only the date part (before the space)
+      const reportDate = reports[i].date.split(' ')[0]; // '13/01/2025'
+      const dateParts = reportDate.split('/'); // ['13', '01', '2025']
       
+      // Create a Date object with the format: new Date(year, month, day)
+      const excelDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
+      
+      // Calculate the reported time in hours
       const hoursAndMinutes = reports[i].hours + reports[i].minutes / 60;
       const timeReported = Math.round((hoursAndMinutes) * 100) / 100;
       
-      const rowData: (string | Date)[] = [
-        excelDate,
-        `${timeReported}`,
+      const rowData: (string | Date | Number)[] = [
+        excelDate, // Pass the Date object here for Excel to recognize as a date
+        timeReported,
         reports[i].description,
         `${reports[i].fname} ${reports[i].lname}`,
       ];
       ExcelData.push(rowData);
     }
+    
     // Set the SUM formula in cell E2 (for total reported time)
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(ExcelData);
-    ws['E2'] = { f: 'SUM(B:B)' }; 
     
+    // Set the cell format for the 'Date' column to date type (for Excel sorting)
+    for (let row = 1; row < ExcelData.length; row++) {
+      const cellAddress = { r: row, c: 0 }; // Column 0 is 'Date'
+      if (ws[XLSX.utils.encode_cell(cellAddress)]) {
+        ws[XLSX.utils.encode_cell(cellAddress)].z = 'mm/dd/yyyy'; // Format as Date
+      }
+    }
+  
+    // Set the SUM formula for the Total row
+    ws['E2'] = { f: 'SUM(B:B)' };
+    
+    // Create a new workbook and append the worksheet
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     
+    // Write the file to the user's system
     XLSX.writeFile(wb, this.excelFileName);
-  }
-  
+  }  
 
   generateFileName(): void {
     if (!this.isFiltered) {
