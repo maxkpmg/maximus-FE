@@ -74,16 +74,18 @@ export class ProjectFilterComponent implements OnChanges {
 
   onExport(): void {
     const reports = this.filteredReports;
-    const ExcelData: string[][] = [['Date', 'Name', 'Reported Time', 'Description', '', '', '', 'Total time reported:']];
+    const ExcelData: string[][] = [['Date', 'Reported Time', 'Description', 'Name', 'Total time']];
     let totalHours = 0;
     let totalMinutes = 0;
 
     for (let i = 0; i < reports.length; i++) {
+      const hoursAndMinutes = reports[i].hours + reports[i].minutes / 60;
+      const timeReported = Math.round((hoursAndMinutes) * 100) / 100;
       const rowData: string[] = [
         reports[i].date,
-        `${reports[i].fname} ${reports[i].lname}`,
-        `${reports[i].hours}H ${reports[i].minutes}M`,
+        `${timeReported}`,
         reports[i].description,
+        `${reports[i].fname} ${reports[i].lname}`,
       ];
       ExcelData.push(rowData);
       totalHours += reports[i].hours;
@@ -91,8 +93,9 @@ export class ProjectFilterComponent implements OnChanges {
     }
     totalHours += Math.floor(totalMinutes / 60);
     totalMinutes = totalMinutes % 60;
-    const totalTimeReported = `${totalHours}H ${totalMinutes}M`;
-    ExcelData[0].push(totalTimeReported);
+    const totalHoursAndMinutes = totalHours + totalMinutes / 60;
+    const totalTimeReported = Math.round(totalHoursAndMinutes * 100) / 100;
+    ExcelData[1].push(`${totalTimeReported}`);
 
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(ExcelData);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();

@@ -44,13 +44,17 @@ export class UserMonthlyReportsComponent implements OnChanges {
     try {
       this.isError = this.isNoUserSelected = false;
       this.isLoading = true;
-      const startDate = new Date(year, month - 1, 1).toISOString().split('T')[0];
-      const endDate = new Date(year, month, 0).toISOString().split('T')[0];
+  
+      const formatDate = (date: Date) => date.toLocaleDateString('sv-SE'); // 'YYYY-MM-DD' in local time
+  
+      const startDate = formatDate(new Date(year, month - 1, 1));
+      const endDate = formatDate(new Date(year, month, 0)); // last day of the month
       const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-user-time-reports', {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: this.user.id, startDate: startDate, endDate: endDate })
       });
+  
       if (response.ok) {
         const data = await response.json();
         this.fetchedMonths.push(`${month}${year}`);
