@@ -156,6 +156,7 @@
   border: none;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
+  background-color: white;
   color: #4D4DFF
 }
 

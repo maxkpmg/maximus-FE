@@ -94,7 +94,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
     const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-bookmarked-projects', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: this.user.id })
+      body: JSON.stringify({ userId: this.user.id, date: this.data.date })
     });
     if (response.ok)
       this.bookmarkedProjects = await response.json();

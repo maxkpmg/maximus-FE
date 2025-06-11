@@ -12,6 +12,8 @@ main {
   width: 100%;
   height: 100vh;
   padding-top: 7vh;
-  background-color: ghostwhite;
+  background: radial-gradient(#f4f3ff 15%, transparent 16%), linear-gradient(45deg, transparent 49%, #f4f3ff 49% 51%, transparent 51%), linear-gradient(-45deg, transparent 49%, #f4f3ff 49% 51%, transparent 51%);
+  background-size: 2em 2em;
+  background-color: #ffffff;
   color: #343434;
 }
