@@ -91,11 +91,15 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
   }
 
   async getBookmarkedProjects(): Promise<void> {
+    const [day, month, year] = this.data.date.split('/');
+    const formattedDate = `${year}-${month}-${day}`;
+
     const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-bookmarked-projects', {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: this.user.id, date: this.data.date })
+      body: JSON.stringify({ userId: this.user.id, date: formattedDate })
     });
+
     if (response.ok)
       this.bookmarkedProjects = await response.json();
   }
