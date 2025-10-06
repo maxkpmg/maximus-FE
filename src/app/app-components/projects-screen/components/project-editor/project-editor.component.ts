@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, Input, Output, EventEmitter, ChangeDetectorRef, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Project, User } from '../../../../interfaces';
+import { Project, User, Stage } from '../../../../interfaces';
 import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinner.component';
 
 @Component({
@@ -26,11 +26,19 @@ export class ProjectEditorComponent implements OnInit, AfterViewInit {
   @Output() save = new EventEmitter<{ project: Project, isNewProject: boolean }>();
   @Output() close = new EventEmitter<void>();
   @ViewChild('n') nameFieldRef: ElementRef;
+
   users: User[] = [];
   projectUsers: User[] = [];
   projectUsersToDisplay: User[] = [];
   usersToSave: User[] = [];
   usersToDelete: User[] = [];
+
+  newStageName: string = '';
+  projectStages: Stage[] = [];
+  projectStagesToDisplay: Stage[] = [];
+  stagesToSave: Stage[] = [];
+  stagesToDelete: Stage[] = [];
+
   prevName: string = '';
   name: string = '';
   state = 'closed';
@@ -44,14 +52,16 @@ export class ProjectEditorComponent implements OnInit, AfterViewInit {
     if (this.project.id > 0)
       this.name = this.prevName = this.project.name;
     try {
-      if (this.project.id > 0)
+      if (this.project.id > 0) {
         await this.getProjectUsers();
+        await this.getProjectStages();
+      }
       await this.getUsers();
       this.isLoading = false;
     }
     catch (e) {
       this.isLoading = false;
-      this.error = 'Server error, failed to fetch users';
+      this.error = 'Server error, failed to fetch data';
       console.error('Error: ', e);
     }
   }
@@ -89,6 +99,71 @@ export class ProjectEditorComponent implements OnInit, AfterViewInit {
     }
   }
 
+    async getProjectStages(): Promise<void> {
+    const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-project-stages', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ projectId: this.project.id })
+    });
+    if (response.ok) {
+      const data = await response.json();
+      this.projectStages = [...data];
+      this.projectStagesToDisplay = [...data];
+    }
+  }
+
+  // === STAGES ACTIONS ===
+  addProjectStage(): void {
+    const name = this.newStageName.trim();
+    if (!name) return;
+
+    // prevent duplicates (case-insensitive)
+    const exists = this.projectStagesToDisplay.some(s => s.name.toLowerCase() === name.toLowerCase());
+    if (exists) {
+      this.error = 'Stage already added';
+      return;
+    }
+
+    // create new stage object (no id yet, backend will assign)
+    const stageToAdd: Stage = { id: -1, project_id: this.project.id, name };
+
+    this.projectStagesToDisplay.push(stageToAdd);
+    this.stagesToSave.push(stageToAdd);
+    this.newStageName = '';
+    this.error = '';
+  }
+
+  deleteProjectStage(stageToDelete: Stage): void {
+    // remove from currently displayed stages
+    this.projectStagesToDisplay = this.projectStagesToDisplay.filter(
+      stage => stage.id !== stageToDelete.id
+    );
+    // if the stage was queued to be saved but not yet persisted, cancel that
+    this.stagesToSave = this.stagesToSave.filter(
+      stage => stage.id !== stageToDelete.id
+    );
+    // if the stage already existed in the project (not a brand new one), queue it for deletion
+    if (this.projectStages.some(stage => stage.id === stageToDelete.id)) {
+      this.stagesToDelete.push(stageToDelete);
+    }
+  }
+
+  async saveProjectStages(): Promise<void> {
+    await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/add-project-stages', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ project_id: this.project.id, stages: this.stagesToSave })
+    });
+  }
+
+  async deleteProjectStages(): Promise<void> {
+    await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/delete-project-stages', {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ project_id: this.project.id, stages: this.stagesToDelete })
+    });
+  }
+
   closeAction(): void {
     this.state = 'closed';
     this.cdr.detectChanges();
@@ -100,10 +175,13 @@ export class ProjectEditorComponent implements OnInit, AfterViewInit {
       try {
         this.isLoading = true;
         await this.saveProject();
-        if (this.usersToDelete.length)
-          await this.deleteProjectUsers();
-        if (this.usersToSave.length)
-          await this.saveProjectUsers();
+
+        if (this.usersToDelete.length) await this.deleteProjectUsers();
+        if (this.usersToSave.length) await this.saveProjectUsers();
+
+        if (this.stagesToDelete.length) await this.deleteProjectStages();
+        if (this.stagesToSave.length) await this.saveProjectStages();
+
         this.isLoading = false;
       } catch (e) {
         this.isLoading = false;

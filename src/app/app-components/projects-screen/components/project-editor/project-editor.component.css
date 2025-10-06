@@ -9,8 +9,8 @@
 }
 
 .container {
-  height: 70vh;
-  width: 35vw;
+  height: 80vh;
+  width: 40vw;
   background-color: white;
   padding: 1vw;
   font-size: 2vh;
@@ -63,9 +63,9 @@ h3 {
   text-align: center;
 }
 
-.project-users-container {
+.project-items-container {
   width: 100%;
-  height: 33vh;
+  height: 20vh;
   border: 1px solid #dee2e6;
   border-radius: 3px;
   overflow-y: auto;
@@ -75,7 +75,7 @@ h3 {
   margin-bottom: 2vh;
 }
 
-.project-user {
+.project-item {
   width: 100%;
   height: 5vh;
   display: flex;
@@ -85,20 +85,20 @@ h3 {
   border-bottom: 1px solid #dee2e6;
 }
 
-.user-name {
+.item-name {
   width: calc(50% - 2.5vh);
   text-align: left;
   white-space: nowrap;
 }
 
-.user-email {
+.item-email {
   width: calc(50% - 2.5vh);
   text-align: right;
   white-space: nowrap;
   padding-right: 0.5vw;
 }
 
-.delete-user {
+.delete-item {
   display: flex;
   height: 5vh;
   width: 5vh;
@@ -107,29 +107,29 @@ h3 {
   border: 0;
 }
 
-.delete-user button {
+.delete-item button {
   display: none;
   height: 80%;
   width: 80%;
   border-radius: 5px;
 }
 
-.project-user:hover button {
+.project-item:hover button {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.delete-user button img {
+.delete-item button img {
   height: 3vh;
   width: 3vh;
 }
 
-.project-user:hover {
+.project-item:hover {
   background-color: ghostwhite;
 }
 
-.project-users-container::-webkit-scrollbar {
+.project-items-container::-webkit-scrollbar {
   display: none;
 }
 
@@ -164,4 +164,10 @@ h3 {
 .projects-btn img {
   height: 3vh;
   width: 3vh;
+}
+
+.assign-dropdowns {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
 }

@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, Output, EventEmitter, AfterViewInit, ChangeDetectorRef, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Project, TimeReport, User } from '../../../../interfaces';
+import { Project, TimeReport, User, Stage } from '../../../../interfaces';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinner.component';
 
@@ -27,11 +27,13 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
   @ViewChildren('h') hoursFieldRef: QueryList<ElementRef>;
   @ViewChildren('m') minutesFieldRef: QueryList<ElementRef>;
   @ViewChildren('d') descriptionFieldRef: QueryList<ElementRef>;
+  @ViewChildren('j') jobTypeFieldRef: QueryList<ElementRef>;
   projects: Project[] = [];
   filteredProjects: Project[] = [];
   bookmarkedProjects: Project[] = [];
-  projectsModel: { id: number, projectId: number, hours: string, minutes: string, description: string }[] = [];
+  projectsModel: { id: number, projectId: number, hours: string, minutes: string, jobType: string, description: string }[] = [];
   descriptionValid: boolean = true;
+  jobTypeValid: boolean = true;
   timeValid: boolean = true;
   maxTimeValid = true;
   totalReportedHours: number = 0;
@@ -39,10 +41,12 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
   state = 'closed';
   isLoading: boolean = false;
   isError: boolean = false;
+  isStagesError: boolean = false;
   isProjectsListLoading: boolean = false;
   isProjectsListError: boolean = false;
   projectsFetched: boolean = false;
-
+  jobType: string = '';
+  jobTypes: { [projectId: number]: Stage[] | undefined } = {};
 
   constructor(private cdr: ChangeDetectorRef) { }
 
@@ -56,38 +60,91 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
     try {
       this.isError = false;
       this.isLoading = true;
+
       await this.getBookmarkedProjects();
+
       const reportedProjectsToFetch: number[] = [];
       for (const report of this.data.reports) {
-        if (!this.bookmarkedProjects.some(bookmarked => bookmarked.id === report.project_id)) {
+        if (!this.bookmarkedProjects.some(bm => bm.id === report.project_id)) {
           reportedProjectsToFetch.push(report.project_id);
         }
       }
+
       if (reportedProjectsToFetch.length) {
         await this.getProjectsById(reportedProjectsToFetch);
       }
-      // map the model of each bookmarked project - either new or filled with values from a report fount on that date
+
+      const allProjects = [...this.bookmarkedProjects];
+      await this.fetchJobTypesForProjects(allProjects.map(p => p.id));
+
       this.projectsModel = this.bookmarkedProjects.map((project) => {
-        const matchingReport = this.data.reports.find(report => report.project_id === project.id);
+        const matchingReport = this.data.reports.find(r => r.project_id === project.id);
         return matchingReport ? {
           id: matchingReport.id,
           projectId: project.id,
           hours: String(matchingReport.hours),
           minutes: String(matchingReport.minutes),
+          jobType: matchingReport.jobType || '',
           description: matchingReport.description
         } : {
           id: 0,
           projectId: project.id,
           hours: '',
           minutes: '',
+          jobType: '',
           description: ''
-        }
+        };
       });
-      this.isLoading = this.isError = false;
+
+      this.isLoading = false;
     } catch (e) {
       this.isError = true;
       console.error('Error: ', e);
     }
+  }
+
+async fetchJobTypesForProjects(projectIds: number[]): Promise<void> {
+    if (!projectIds?.length) return;
+
+    const requests = projectIds.map(async (projectId) => {
+      try {
+        const response = await fetch(
+          'https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-project-stages',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ projectId })
+          }
+        );
+        if (response.ok) {
+          const stages = await response.json();
+          this.jobTypes[projectId] = stages;
+        } else {
+          console.error(`Failed to fetch job types for project ${projectId}`);
+        }
+      } catch (e) {
+        console.error(`Error fetching job types for project ${projectId}:`, e);
+        this.isStagesError = true;
+      }
+    });
+
+    await Promise.all(requests);
+  }
+
+  async onOtherProjectSelected(project: Project): Promise<void> {
+    this.projects = this.projects.filter(elem => elem.id !== project.id);
+    this.bookmarkedProjects.push(project);
+
+    await this.fetchJobTypesForProjects([project.id]);
+
+    this.projectsModel.push({
+      id: 0,
+      projectId: project.id,
+      hours: '',
+      minutes: '',
+      jobType: '',
+      description: ''
+    });
   }
 
   async getBookmarkedProjects(): Promise<void> {
@@ -161,6 +218,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
             project_id: report.projectId,
             hours: !isNaN(hours) ? hours : 0,
             minutes: !isNaN(minutes) ? minutes : 0,
+            jobType: report.jobType,
             description: report.description
           }
           reportsToInsert.push(data);
@@ -190,7 +248,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
 
   validateTimeReports(): boolean {
     let totalReportedHours = 0, totalReportedMinutes = 0;
-    this.descriptionValid = this.timeValid = this.maxTimeValid = true;
+    this.descriptionValid = this.timeValid = this.maxTimeValid = this.jobTypeValid = true;
     for (let i = 0; i < this.projectsModel.length; i++) {
       this.validate(this.projectsModel[i], i);
       if (!isNaN(Number(this.projectsModel[i].hours)))
@@ -200,19 +258,20 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
     }
     this.totalReportedHours = totalReportedHours + totalReportedMinutes / 60
     if (this.totalReportedHours > 16) {
-      this.descriptionValid = this.timeValid = true;
+      this.descriptionValid = this.timeValid = this.jobTypeValid = true;
       this.maxTimeValid = false;
       return this.maxTimeValid;
     }
-    return this.descriptionValid && this.timeValid;
+    return this.descriptionValid && this.timeValid && this.jobTypeValid;
   }
 
-  validate(timeReport: { projectId: number, hours: string, minutes: string, description: string }, index: number): void {
+  validate(timeReport: { projectId: number, hours: string, minutes: string, jobType: string, description: string }, index: number): void {
     const description = timeReport.description.trim();
     const hours = timeReport.hours;
     const minutes = timeReport.minutes;
+    const jobType = timeReport.jobType.trim();
 
-    if (!description && !hours && !minutes) return;
+    if (!description && !jobType && !hours && !minutes) return;
 
     if (description.length === 0) {
       this.descriptionFieldRef.get(index)!.nativeElement.classList.add('invalid');
@@ -220,6 +279,14 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
     } else {
       this.descriptionFieldRef.get(index)!.nativeElement.classList.remove('invalid');
     }
+
+    if (jobType.length === 0) {
+      this.jobTypeFieldRef.get(index)!.nativeElement.classList.add('invalid');
+      this.jobTypeValid = false;
+    } else {
+      this.jobTypeFieldRef.get(index)!.nativeElement.classList.remove('invalid');
+    }
+
     if (!hours && !minutes) {
       this.timeValid = false;
       this.hoursFieldRef.get(index)!.nativeElement.classList.add('invalid');
@@ -229,6 +296,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
       this.hoursFieldRef.get(index)!.nativeElement.classList.remove('invalid');
       this.minutesFieldRef.get(index)!.nativeElement.classList.remove('invalid');
     }
+
     if (hours !== '') {
       if (!isNaN(Number(hours)) && Number(hours) >= 0 && Number(hours) <= 16) {
         this.hoursFieldRef.get(index)!.nativeElement.classList.remove('invalid');
@@ -237,6 +305,7 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
         this.timeValid = false;
       }
     }
+
     if (minutes !== '') {
       if (!isNaN(Number(minutes)) && Number(minutes) >= 0 && Number(minutes) < 60) {
         this.minutesFieldRef.get(index)!.nativeElement.classList.remove('invalid');
@@ -245,18 +314,6 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
         this.timeValid = false;
       }
     }
-  }
-
-  onOtherProjectSelected(project: Project): void {
-    this.projects = this.projects.filter(elem => elem.id !== project.id);
-    this.bookmarkedProjects.push(project);
-    this.projectsModel.push({
-      id: 0,
-      projectId: project.id,
-      hours: '',
-      minutes: '',
-      description: ''
-    });
   }
 
   onPlusButtonClick(index: number): void {

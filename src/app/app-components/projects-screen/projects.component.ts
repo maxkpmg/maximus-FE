@@ -33,7 +33,7 @@ export class ProjectsScreenComponent implements OnInit {
   isProjectEditor: boolean = false;
   isConfirmation: boolean = false;
   projectToEdit: Project = { id: -1, name: '', active: true };
-  timeReportToEdit: TimeReport = { id: -1, user_id: -1, project_id: -1, date: '', minutes: -1, hours: -1, fname: '', lname: '', description: '' };
+  timeReportToEdit: TimeReport = { id: -1, user_id: -1, project_id: -1, date: '', minutes: -1, hours: -1, fname: '', lname: '', jobType: '', description: '' };
   confirmationData: { type: string, id: number };
   @ViewChild('sb') sideBarRef: ProjectsSidebarComponent;
   @ViewChild('pi') projectInfoRef: ProjectInfoComponent;

@@ -47,6 +47,27 @@
 
 		<div class="input-group input-group-sm mb-3">
 			<div class="input-group-prepend" style="width: 28%">
+				<span class="input-group-text">Stage</span>
+			</div>
+			<button #j class="form-control text-start d-flex justify-content-between align-items-center"
+					style="height: 4.5vh; border-radius: 0.25rem; direction: rtl;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+				<span style="display: flex; align-items: center;">{{ jobType || 'שלב...' }}</span>
+				<img src="../../../assets/expand-2.png" style="height: 12px;" />
+			</button>
+			<ul class="dropdown-menu" style="width: 72% !important;">
+				<button class="dropdown-item text-muted" type="button" style="border: 0" (click)="jobType = ''">
+					---
+				</button>
+				@for (type of jobTypes; track type; let i = $index) {
+					<button class="dropdown-item" type="button" style="border: 0" (click)="jobType=type.name">
+						{{ type }}
+					</button>
+				}
+			</ul>
+		</div>
+
+		<div class="input-group input-group-sm mb-3">
+			<div class="input-group-prepend" style="width: 28%">
 				<span class="input-group-text">Description</span>
 			</div>
 			<input #d [(ngModel)]="description" class="form-control" type="text" maxlength="200">
@@ -54,6 +75,7 @@
 
 		<div class="validationsContainer">
 			@if (isSaveError) {<div class="validation">An error accured while saving</div>}
+			@if (isStagesError) {<div class="validation">An error accured while retrieving stages</div>}
 			@if (isUsersError) {<div class="validation">An error accured while retrieving users</div>}
 			@if (!nameValid) {<div class="validation">Name is mandatory</div>}
 			@if (!hoursValid) {<div class="validation">Hours should be a value between 0-12</div>}

@@ -13,6 +13,12 @@ export interface User {
   active: boolean;
 }
 
+export interface Stage {
+  id: number;
+  project_id: number;
+  name: string;
+}
+
 export interface TimeReport {
   id: number;
   date: string;
@@ -22,5 +28,6 @@ export interface TimeReport {
   project_id: number;
   hours: number;
   minutes: number;
+  jobType: string;
   description: string;
 }

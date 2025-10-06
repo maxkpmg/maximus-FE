@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, Output, ViewChild, EventEmitter, AfterViewInit, ChangeDetectorRef, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CalendarModule } from 'primeng/calendar';
-import { TimeReport, User } from '../../../../interfaces';
+import { TimeReport, User,Stage } from '../../../../interfaces';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { LoadingSpinnerComponent } from '../../../loading-spinner/loading-spinner.component';
 
@@ -30,6 +30,7 @@ export class TimeReportEditorComponent implements OnInit, AfterViewInit {
   @ViewChild('h') hoursFieldRef: ElementRef;
   @ViewChild('m') minutesFieldRef: ElementRef;
   @ViewChild('d') descriptionFieldRef: ElementRef;
+  @ViewChild('j') jobTypeFieldRef: ElementRef;
   users: User[] = [];
   today: Date = new Date();
   date: Date = new Date();
@@ -39,19 +40,37 @@ export class TimeReportEditorComponent implements OnInit, AfterViewInit {
   user_id: number = -1;
   hours: string = '';
   minutes: string = '';
+  jobType: string = '';
+  jobTypes: Stage[] = [];
   description: string = '';
   nameValid: boolean = true;
   hoursValid: boolean = true;
   minutesValid: boolean = true;
   descriptionValid: boolean = true;
+  jobTypeValid: boolean = true;
   state = 'closed';
   isLoading: boolean = true;
   isUsersError: boolean = false;
+  isStagesError: boolean = false;
   isSaveError: boolean = false;
 
   constructor(private cdr: ChangeDetectorRef) { }
 
   async ngOnInit(): Promise<void> {
+    try {
+      const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-project-stages', {
+        method: "POST",
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId: this.projectId })
+      });
+      if (response.ok) {
+        this.jobTypes = await response.json();
+      }
+    } catch (e) {
+      this.isStagesError = true;
+      console.error('Error: ', e);
+    }
+
     try {
       const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-users', {
         method: "POST",
@@ -79,6 +98,7 @@ export class TimeReportEditorComponent implements OnInit, AfterViewInit {
       this.lname = this.timeReportToEdit.lname;
       this.hours = String(this.timeReportToEdit.hours);
       this.minutes = String(this.timeReportToEdit.minutes);
+      this.jobType = this.timeReportToEdit.jobType;
       this.description = this.timeReportToEdit.description;
     }
   }
@@ -111,6 +131,7 @@ export class TimeReportEditorComponent implements OnInit, AfterViewInit {
         lname: this.lname,
         hours: isNaN(Number(this.hours)) ? 0 : Number(this.hours),
         minutes: isNaN(Number(this.minutes)) ? 0 : Number(this.minutes),
+        jobType: this.jobType,
         description: this.description
       }
       const isNewTimeReport = this.id > -1 ? false : true;
@@ -165,6 +186,14 @@ export class TimeReportEditorComponent implements OnInit, AfterViewInit {
     }
 
     if (!this.description.trim()) {
+      this.descriptionFieldRef.nativeElement.classList.add('invalid');
+      this.descriptionValid = false;
+    } else {
+      this.descriptionFieldRef.nativeElement.classList.remove('invalid');
+      this.descriptionValid = true;
+    }
+
+    if (!this.jobType.trim()) {
       this.descriptionFieldRef.nativeElement.classList.add('invalid');
       this.descriptionValid = false;
     } else {

@@ -54,7 +54,7 @@ export class ProjectInfoComponent implements OnChanges {
   }
 
   onNewTimeReport(): void {
-    this.newTimeReport.emit({ id: -1, date: '', user_id: -1, fname: '', lname: '', project_id: -1, hours: -1, minutes: -1, description: '' });
+    this.newTimeReport.emit({ id: -1, date: '', user_id: -1, fname: '', lname: '', project_id: -1, hours: -1, minutes: -1, jobType: '', description: '' });
   }
 
   onEditProject(): void {

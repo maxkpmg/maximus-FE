@@ -2,46 +2,76 @@
 	<button class="background" (click)="closeAction()"></button>
 	<div class="container">
 
+		<!-- PROJECT NAME -->
 		<h3 class="input-group-prepend">Project name:</h3>
 		<input #n [(ngModel)]="name" type="text" class="form-control" maxlength="25">
 
+		<!-- ASSIGNMENT DROPDOWNS -->
+		<div class="assign-dropdowns">
+			<!-- ASSIGN USER -->
+			<div class="dropdown">
+				<button type="button" class="btn btn-light projects-btn" data-bs-toggle="dropdown" aria-expanded="false"
+					data-bs-reference="parent">
+					<div>Assign user...</div>
+					<img src="../../../assets/expand-dark.png" />
+				</button>
+				<ul class="dropdown-menu dropdown-scroll">
+					@for (user of users; track user; let i = $index) {
+					<button id="dropdown-item" class="dropdown-item" style="border: 0" type="button"
+						(click)="addProjectUser(user)">{{user.fname}} {{user.lname}}</button>
+					}
+				</ul>
+			</div>
+
+			<!-- ASSIGN STAGE -->
+			<div class="input-group">
+				<input [(ngModel)]="newStageName" type="text" class="form-control" placeholder="Enter stage name" maxlength="20" style="margin: 0;">
+				<button type="button" class="btn btn-success" (click)="addProjectStage()">Add</button>
+			</div>
+		</div>
+
+		<!-- USERS SECTION -->
 		<h3 class="input-group-prepend">Assigned users:</h3>
-		<div class="project-users-container">
+		<div class="project-items-container">
 			@for (user of projectUsersToDisplay; track user; let i = $index) {
-			<div class="project-user">
-				<div class="delete-user">
+			<div class="project-item">
+				<div class="delete-item">
 					<button class="btn btn-danger" (click)="deleteProjectUser(user)">
 						<img src='../../../../../assets/delete.png' />
 					</button>
 				</div>
-				<div class="user-name">{{user.fname}} {{user.lname}}</div>
-				<div class="user-email">{{user.email}}</div>
+				<div class="item-name">{{user.fname}} {{user.lname}}</div>
+				<div class="item-email">{{user.email}}</div>
 			</div>
 			}
 		</div>
-		
-		<h3>Assign user from list:</h3>
-		<div class="dropdown">
-			<button type="button" class="btn btn-light projects-btn" data-bs-toggle="dropdown" aria-expanded="false" data-bs-reference="parent">
-				<div>Users list...</div>
-				<img src="../../../assets/expand-dark.png" />
-			</button>
-			<ul class="dropdown-menu dropdown-scroll">
-				@for (user of users; track user; let i = $index) {
-				<button id="dropdown-item" class="dropdown-item" style="border: 0" type="button"
-					(click)="addProjectUser(user)">{{user.fname}} {{user.lname}}</button>
-				}
-			</ul>
+
+		<!-- STAGES SECTION -->
+		<h3 class="input-group-prepend">Assigned stages:</h3>
+		<div class="project-items-container">
+			@for (stage of projectStagesToDisplay; track stage; let i = $index) {
+			<div class="project-item">
+				<div class="delete-item">
+					<button class="btn btn-danger" (click)="deleteProjectStage(stage)">
+						<img src='../../../../../assets/delete.png' />
+					</button>
+				</div>
+				<div class="item-name">{{stage.name}}</div>
+			</div>
+			}
 		</div>
 
+		<!-- VALIDATION -->
 		<div class="validation">{{error}}</div>
 
+		<!-- SAVE / CANCEL BUTTONS -->
 		<div class="input-group-sm mb-3 buttons-group">
 			<button type="button" class="btn btn-success" style="width: 35%" (click)="saveAction()">Save</button>
 			<button type="button" class="btn btn-danger" style="width: 35%" (click)="closeAction()">Cancel</button>
 		</div>
 
 	</div>
+
 	@if (isLoading) {
 	<div class="loading">
 		<LoadingSpinnerComponent />

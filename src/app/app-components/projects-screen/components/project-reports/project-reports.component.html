@@ -2,9 +2,10 @@
 	@if (!isLoading && timeReports.length) {
 	<table class="table table-sm">
 		<tr>
-			<th scope="col" style="width:18%">Date</th>
-			<th scope="col" style="width:18%">Name</th>
-			<th scope="col" style="width:18%">Work Time</th>
+			<th scope="col" style="width:13.5%">Date</th>
+			<th scope="col" style="width:13.5%">Name</th>
+			<th scope="col" style="width:13.5%">Work Time</th>
+			<th scope="col" style="width:13.5%">Stage</th>
 			<th scope="col" style="width:36%">Description</th>
 			<th scope="col" style="width:10%"></th>
 		</tr>
@@ -13,6 +14,7 @@
 			<td>{{timeReport.date}}</td>
 			<td>{{timeReport.fname}} {{timeReport.lname}}</td>
 			<td>{{timeReport.hours}}h {{timeReport.minutes}}m</td>
+			<td>{{timeReport.jobType}}</td>
 			<td style="overflow-wrap: anywhere">{{timeReport.description}}</td>
 			<td>
 				@if (project.active) {

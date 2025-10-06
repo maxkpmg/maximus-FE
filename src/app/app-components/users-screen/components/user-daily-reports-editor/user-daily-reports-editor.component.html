@@ -10,6 +10,7 @@
 			<h6 style="width: 12vw;">Project</h6>
 			<h6 style="width: 5vw;">Hours</h6>
 			<h6 style="width: 5vw;">Minutes</h6>
+			<h6 style="width: 6vw;">Stage</h6>
 			<h6 style="width: 23vw;">Description</h6>
 		</div>
 		<div class="projectsSection">
@@ -30,6 +31,35 @@
 						(input)="onInput($event, i, false)">
 					<button type="button" class="btn btn-light plus-minus-btn" style="width: 2vw;"
 						(click)="onMinusButtonClick(i)">-</button>
+				</div>
+
+				<div class="dropdown" style="width: 6vw; margin-left: 1vw;">
+					<button
+						type="button"
+						class="btn btn-light projects-btn"
+						data-bs-toggle="dropdown"
+						aria-expanded="false"
+						style="direction: rtl; align-items: center; justify-content: space-between;"
+					>
+						<div>{{ jobType || 'שלב...' }}</div>
+						<img style="height: 2vh; width: 2vh;" src="../../../assets/expand-2.png" />
+					</button>
+
+					<ul class="dropdown-menu" style="width: 6vw;">
+						@if (jobTypes[project.id]?.length) {
+							<button class="dropdown-item text-muted" type="button" style="border: 0" (click)="jobType = ''">
+								---
+							</button>
+
+							@for (type of jobTypes[project.id]; track type) {
+								<button class="dropdown-item" type="button" style="border: 0" (click)="jobType = type.name">
+									{{ type.name }}
+								</button>
+							}
+						} @else {
+							<li class="dropdown-item text-muted" style="border: 0;">אין שלבים</li>
+						}
+					</ul>
 				</div>
 
 				<div class="input-group input-group-sm mb-3" style="width: 23vw; margin-left: 1vw;">
@@ -70,9 +100,11 @@
 
 		<div>
 			@if (!descriptionValid) {<div class="validation">Description is mandatory</div>}
+			@if (!jobTypeValid) {<div class="validation">Stage is mandatory</div>}
 			@if (!timeValid) {<div class="validation">Illegal time report</div>}
 			@if (!maxTimeValid) {<div class="validation">Maximum daily time report allowed is 16 hours</div>}
 			@if (isError) {<div class="validation">Server error, couldn't save report</div>}
+			@if (isStagesError) {<div class="validation">An error accured while retrieving stages</div>}
 		</div>
 
 		<div class="input-group-sm mb-3 buttons-group">
