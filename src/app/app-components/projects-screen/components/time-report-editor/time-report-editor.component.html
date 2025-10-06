@@ -60,7 +60,7 @@
 				</button>
 				@for (type of jobTypes; track type; let i = $index) {
 					<button class="dropdown-item" type="button" style="border: 0" (click)="jobType=type.name">
-						{{ type }}
+						{{ type.name }}
 					</button>
 				}
 			</ul>
