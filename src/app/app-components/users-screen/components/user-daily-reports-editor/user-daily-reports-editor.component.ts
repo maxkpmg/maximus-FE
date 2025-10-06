@@ -45,7 +45,6 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
   isProjectsListLoading: boolean = false;
   isProjectsListError: boolean = false;
   projectsFetched: boolean = false;
-  jobType: string = '';
   jobTypes: { [projectId: number]: Stage[] | undefined } = {};
 
   constructor(private cdr: ChangeDetectorRef) { }

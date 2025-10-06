@@ -34,21 +34,19 @@
 				</div>
 
 				<div class="dropdown" style="width: 6vw; margin-left: 1vw;">
-					<button #j type="button" class="btn btn-light projects-btn" data-bs-toggle="dropdown"
-						aria-expanded="false" style="direction: rtl; align-items: center; justify-content: space-between;"
-					>
-						<div>{{ jobType || 'שלב...' }}</div>
+					<button #j type="button" class="btn btn-light projects-btn" data-bs-toggle="dropdown" aria-expanded="false" style="direction: rtl; align-items: center; justify-content: space-between;">
+						<div>
+							{{ projectsModel[i].jobType || 'שלב...' }}
+						</div>
 						<img style="height: 2vh; width: 2vh;" src="../../../assets/expand-2.png" />
 					</button>
-
 					<ul class="dropdown-menu" style="width: 6vw;">
 						@if (jobTypes[project.id]?.length) {
-							<button class="dropdown-item text-muted" type="button" style="border: 0" (click)="jobType = ''">
+							<button class="dropdown-item text-muted" type="button" style="border: 0" (click)="projectsModel[i].jobType = ''">
 								---
 							</button>
-
 							@for (type of jobTypes[project.id]; track type) {
-								<button class="dropdown-item" type="button" style="border: 0" (click)="jobType = type.name">
+								<button class="dropdown-item" type="button" style="border: 0" (click)="projectsModel[i].jobType = type.name">
 									{{ type.name }}
 								</button>
 							}

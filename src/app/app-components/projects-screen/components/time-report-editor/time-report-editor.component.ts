@@ -98,8 +98,8 @@ export class TimeReportEditorComponent implements OnInit, AfterViewInit {
       this.lname = this.timeReportToEdit.lname;
       this.hours = String(this.timeReportToEdit.hours);
       this.minutes = String(this.timeReportToEdit.minutes);
-      this.jobType = this.timeReportToEdit.jobType;
-      this.description = this.timeReportToEdit.description;
+      this.jobType = this.timeReportToEdit.jobType || '';
+      this.description = this.timeReportToEdit.description || '';
     }
   }
 
@@ -194,11 +194,11 @@ export class TimeReportEditorComponent implements OnInit, AfterViewInit {
     }
 
     if (!this.jobType.trim()) {
-      this.descriptionFieldRef.nativeElement.classList.add('invalid');
-      this.descriptionValid = false;
+      this.jobTypeFieldRef.nativeElement.classList.add('invalid');
+      this.jobTypeValid = false;
     } else {
-      this.descriptionFieldRef.nativeElement.classList.remove('invalid');
-      this.descriptionValid = true;
+      this.jobTypeFieldRef.nativeElement.classList.remove('invalid');
+      this.jobTypeValid = true;
     }
 
     if (this.hoursValid && !this.minutes) {
@@ -210,7 +210,7 @@ export class TimeReportEditorComponent implements OnInit, AfterViewInit {
       this.hoursValid = true;
     }
 
-    return this.nameValid && this.hoursValid && this.minutesValid && this.descriptionValid;
+    return this.nameValid && this.hoursValid && this.minutesValid && this.descriptionValid && this.jobTypeValid;
   }
 
   onInput(input: any, isHours: boolean): void {
