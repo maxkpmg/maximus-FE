@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from
 import { FormsModule } from '@angular/forms';
 import { CalendarModule } from 'primeng/calendar';
 import * as XLSX from 'xlsx';
-import { TimeReport } from '../../../../interfaces';
+import { TimeReport, Stage } from '../../../../interfaces';
 
 @Component({
   selector: 'ProjectFilterComponent',
@@ -12,6 +12,12 @@ import { TimeReport } from '../../../../interfaces';
   styleUrl: './project-filter.component.css'
 })
 export class ProjectFilterComponent implements OnChanges {
+  @Input() projectId!: number;
+  @Input() projectName: string;
+  @Input() reports: TimeReport[];
+  @Output() filter = new EventEmitter<TimeReport[]>();
+  @Output() clear = new EventEmitter<Date[]>();
+  @Output() exportXL = new EventEmitter<void>();
   isFiltered: boolean = false;
   filterType: string = '';
   today: Date = new Date();
@@ -20,14 +26,13 @@ export class ProjectFilterComponent implements OnChanges {
   toDate: Date = new Date();
   validationMsg: boolean = false;
   excelFileName: string = '';
-  @Input() projectName: string;
-  @Input() reports: TimeReport[];
   filteredReports: TimeReport[] = [];
-  @Output() filter = new EventEmitter<TimeReport[]>();
-  @Output() clear = new EventEmitter<Date[]>();
-  @Output() exportXL = new EventEmitter<void>();
+  stages: Stage[] = [];
+  selectedStage: string = '';
+  filterByStage: boolean = false;
+  isStagesError: boolean = false;
 
-  ngOnChanges(changes: SimpleChanges): void {
+  async ngOnChanges(changes: SimpleChanges): Promise<void> {
     this.filteredReports = this.reports;
     this.isFiltered = false;
     this.filterType = '';
@@ -35,40 +40,78 @@ export class ProjectFilterComponent implements OnChanges {
     this.fromDate = this.today;
     this.toDate = this.today;
     this.generateFileName();
+    if (changes['projectId'] && this.projectId) {
+      this.fetchStages();
+    }
+  }
+
+  async fetchStages() {
+    try {
+      const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-project-stages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ projectId: this.projectId })
+      });
+      if (response.ok) {
+        this.stages = await response.json();
+      } else {
+        this.isStagesError = true;
+      }
+    } catch (e) {
+      this.isStagesError = true;
+      console.error('Error fetching stages: ', e);
+    }
   }
 
   onFilter(): void {
+    let filtered = this.reports;
+
+    // Filter by Month
     if (this.filterType === 'month') {
       const firstDayOfMonth = new Date(this.month.getFullYear(), this.month.getMonth(), 1).getTime();
       const lastDayOfMonth = new Date(this.month.getFullYear(), this.month.getMonth() + 1, 0).getTime();
-      this.filteredReports = this.reports.filter(timeReport => {
-        const d = new Date(Number(timeReport.date.slice(6)), Number(timeReport.date.slice(3, 5)) - 1, Number(timeReport.date.slice(0, 2))).getTime();
-        return (d >= firstDayOfMonth && d <= lastDayOfMonth);
-      })
-      this.isFiltered = true;
-      this.generateFileName();
-      this.filter.emit(this.filteredReports);
+      filtered = filtered.filter(timeReport => {
+        const d = new Date(
+          Number(timeReport.date.slice(6)),
+          Number(timeReport.date.slice(3, 5)) - 1,
+          Number(timeReport.date.slice(0, 2))
+        ).getTime();
+        return d >= firstDayOfMonth && d <= lastDayOfMonth;
+      });
     }
-    else {
-      if (this.toDate.getTime() >= this.fromDate.getTime()) {
-        this.validationMsg = false;
-        this.filteredReports = this.reports.filter(timeReport => {
-          const d = new Date(Number(timeReport.date.slice(6)), Number(timeReport.date.slice(3, 5)) - 1, Number(timeReport.date.slice(0, 2))).getTime();
-          return (d >= this.fromDate.getTime() && d <= this.toDate.getTime());
-        })
-        this.isFiltered = true;
-        this.generateFileName();
-        this.filter.emit(this.filteredReports);
-      }
-      else {
+
+    // Filter by Custom Date Range
+    else if (this.filterType === 'custom') {
+      if (this.toDate.getTime() < this.fromDate.getTime()) {
         this.validationMsg = true;
+        return;
       }
+      this.validationMsg = false;
+      filtered = filtered.filter(timeReport => {
+        const d = new Date(
+          Number(timeReport.date.slice(6)),
+          Number(timeReport.date.slice(3, 5)) - 1,
+          Number(timeReport.date.slice(0, 2))
+        ).getTime();
+        return d >= this.fromDate.getTime() && d <= this.toDate.getTime();
+      });
     }
+
+    if (this.filterByStage && this.selectedStage && this.selectedStage.trim() !== '') {
+      filtered = filtered.filter(r => r.jobType === this.selectedStage);
+    }
+
+    this.filteredReports = filtered;
+    this.isFiltered = true;
+    this.generateFileName();
+    this.filter.emit(this.filteredReports);
   }
 
   onClear() {
     this.filteredReports = this.reports;
     this.isFiltered = false;
+    this.filterByStage = false;
+    this.selectedStage = '';
     this.clear.emit();
   }
 
@@ -96,7 +139,7 @@ export class ProjectFilterComponent implements OnChanges {
       ];
       ExcelData.push(rowData);
     }
-    
+
     // Set the SUM formula in cell E2 (for total reported time)
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(ExcelData);
     
@@ -107,36 +150,44 @@ export class ProjectFilterComponent implements OnChanges {
         ws[XLSX.utils.encode_cell(cellAddress)].z = 'mm/dd/yyyy'; // Format as Date
       }
     }
-  
     // Set the SUM formula for the Total row
     ws['E2'] = { f: 'SUM(B:B)' };
-    
     // Create a new workbook and append the worksheet
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    
     // Write the file to the user's system
     XLSX.writeFile(wb, this.excelFileName);
   }  
 
   generateFileName(): void {
+    let baseFileName = '';
+
     if (!this.isFiltered) {
-      this.excelFileName = `${this.projectName}_full_report.xlsx`;
-    }
+      baseFileName = `${this.projectName}_full_report`;
+    } 
     else if (this.filterType === 'month') {
-      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-      this.excelFileName = `${this.projectName}_${monthNames[this.month.getMonth()]}_${this.month.getFullYear()}.xlsx`;
-    }
+      const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+      baseFileName = `${this.projectName}_${monthNames[this.month.getMonth()]}_${this.month.getFullYear()}`;
+    } 
     else {
       const fromDay = String(this.fromDate.getDate()).padStart(2, '0');
       const fromMonth = String(this.fromDate.getMonth() + 1).padStart(2, '0');
       const fromYear = this.fromDate.getFullYear();
-      const fromDate = `${fromDay}${fromMonth}${fromYear}`;
       const toDay = String(this.toDate.getDate()).padStart(2, '0');
       const toMonth = String(this.toDate.getMonth() + 1).padStart(2, '0');
       const toYear = this.toDate.getFullYear();
-      const toDate = `${toDay}${toMonth}${toYear}`;
-      this.excelFileName = `${this.projectName}_${fromDate}_${toDate}.xlsx`;
+      baseFileName = `${this.projectName}_${fromDay}${fromMonth}${fromYear}_${toDay}${toMonth}${toYear}`;
     }
+
+    if (this.filterByStage && this.selectedStage && this.selectedStage.trim() !== '') {
+      // Replace spaces with underscores for a clean filename
+      const stageSafe = this.selectedStage.replace(/\s+/g, '_');
+      baseFileName += `_${stageSafe}`;
+    }
+
+    this.excelFileName = `${baseFileName}.xlsx`;
   }
 }

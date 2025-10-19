@@ -1,6 +1,4 @@
 <div class="container">
-	<h2>Filters</h2>
-
 	<div class="form-check" style="margin-bottom: 2vh">
 		<input [(ngModel)]="filterType" class="form-check-input" type="radio" id="monthDate" value="month" [disabled]="!reports.length">
 		<label class="form-check-label" for="monthDate">
@@ -38,7 +36,37 @@
 	<div class="validation">Illegal date range</div>
 	}
 
-	<div class="divider"></div>
+  <div class="divider"></div>
+
+  <div class="form-check" style="margin-bottom: 1vh;">
+    <input [(ngModel)]="filterByStage" class="form-check-input" type="checkbox" id="stageFilter" [disabled]="!stages.length">
+    <label class="form-check-label" for="stageFilter">
+      Filter by stage
+    </label>
+  </div>
+
+  @if (filterByStage) {
+    <div class="input-group input-group-sm mb-3" style="width: 100%;">
+      <button class="form-control text-start d-flex justify-content-between align-items-center"
+              style="height: 4.5vh; border-radius: 0.25rem;"
+              type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <span>{{ selectedStage || 'Select stage...' }}</span>
+        <img src="../../../assets/expand-2.png" style="height: 12px;" />
+      </button>
+      <ul class="dropdown-menu" style="width: 70% !important;">
+        <button class="dropdown-item text-muted" type="button" (click)="selectedStage = ''">---</button>
+        @for (stage of stages; track stage.id) {
+          <button class="dropdown-item" type="button" (click)="selectedStage = stage.name">
+            {{ stage.name }}
+          </button>
+        }
+      </ul>
+    </div>
+  }
+
+  @if (isStagesError) {
+    <div class="validation text-danger">Failed to load stages</div>
+  }
 
 	<div class="button-container">
 		<button type="button" class="btn btn-primary" style="font-weight: bold" (click)="onFilter()" [disabled]="!reports.length || !this.filterType">FILTER</button>
@@ -46,7 +74,6 @@
 	<div class="button-container">
 		<button type="button" class="btn btn-secondary" (click)="onClear()" [disabled]="!reports.length || !this.filterType">Clear filters</button>
 	</div>
-	<div class="divider"></div>
 	<div class="button-container">
 		<button type="button" class="btn btn-success" (click)="onExport()" [disabled]="!reports.length">Export to Excel</button>
 	</div>

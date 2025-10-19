@@ -14,7 +14,7 @@
 
   <aside>
     <ProjectFilterComponent [reports]="timeReports" [projectName]="selectedProject.name" (filter)="onFilter($event)"
-      (clear)="onClearFilters()" />
+      (clear)="onClearFilters()" [projectId]="selectedProject.id" />
   </aside>
 
   @if (isTimeReportEditor) {
