@@ -127,6 +127,11 @@ button {
   margin-bottom: 2vh;
 }
 
+.dropdownButton {
+  height: 4.5vh;
+  width: 100%;
+}
+
 label {
   font-size: 2vh;
 }

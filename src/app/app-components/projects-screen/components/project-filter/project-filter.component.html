@@ -56,7 +56,7 @@
       <ul class="dropdown-menu" style="width: 70% !important;">
         <button class="dropdown-item text-muted" type="button" (click)="selectedStage = ''">---</button>
         @for (stage of stages; track stage.id) {
-          <button class="dropdown-item" type="button" (click)="selectedStage = stage.name">
+          <button class="dropdown-item dropdownButton" type="button" (click)="selectedStage = stage.name">
             {{ stage.name }}
           </button>
         }
