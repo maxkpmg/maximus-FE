@@ -128,8 +128,8 @@ button {
 }
 
 .dropdownButton {
-  height: 4.5vh;
   width: 100%;
+  margin-bottom: 0;
 }
 
 label {
