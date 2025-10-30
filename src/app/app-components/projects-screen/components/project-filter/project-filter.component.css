@@ -9,6 +9,9 @@
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
 }
 
 h2 {
@@ -125,6 +128,12 @@ button {
   height: 4.5vh;
   width: 60%;
   margin-bottom: 2vh;
+}
+
+.dropdown-menu {
+  max-height: 20vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .dropdownButton {

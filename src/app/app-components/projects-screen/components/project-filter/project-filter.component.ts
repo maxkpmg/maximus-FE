@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from
 import { FormsModule } from '@angular/forms';
 import { CalendarModule } from 'primeng/calendar';
 import * as XLSX from 'xlsx';
-import { TimeReport, Stage } from '../../../../interfaces';
+import { TimeReport, Stage, User } from '../../../../interfaces';
 
 @Component({
   selector: 'ProjectFilterComponent',
@@ -27,10 +27,16 @@ export class ProjectFilterComponent implements OnChanges {
   validationMsg: boolean = false;
   excelFileName: string = '';
   filteredReports: TimeReport[] = [];
+
   stages: Stage[] = [];
   selectedStage: string = '';
   filterByStage: boolean = false;
   isStagesError: boolean = false;
+
+  users: User[] = [];
+  filterByUser: boolean = false;
+  selectedUser: string = '';
+  isUsersError: boolean = false;
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     this.filteredReports = this.reports;
@@ -42,6 +48,29 @@ export class ProjectFilterComponent implements OnChanges {
     this.generateFileName();
     if (changes['projectId'] && this.projectId) {
       this.fetchStages();
+      this.fetchUsers();
+    }
+  }
+
+  async fetchUsers() {
+    try {
+      const response = await fetch(
+        'https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-users',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ onlyActiveUsers: true }), // ✅ get only active ones
+        }
+      );
+
+      if (response.ok) {
+        this.users = await response.json();
+      } else {
+        this.isUsersError = true;
+      }
+    } catch (e) {
+      this.isUsersError = true;
+      console.error('Error fetching users: ', e);
     }
   }
 
@@ -101,6 +130,12 @@ export class ProjectFilterComponent implements OnChanges {
       filtered = filtered.filter(r => r.jobType === this.selectedStage);
     }
 
+    if (this.filterByUser && this.selectedUser?.trim() !== '') {
+      filtered = filtered.filter(
+        r => `${r.fname} ${r.lname}`.trim() === this.selectedUser
+      );
+    }
+
     this.filteredReports = filtered;
     this.isFiltered = true;
     this.generateFileName();
@@ -112,6 +147,8 @@ export class ProjectFilterComponent implements OnChanges {
     this.isFiltered = false;
     this.filterByStage = false;
     this.selectedStage = '';
+    this.filterByUser = false;
+    this.selectedUser = '';
     this.clear.emit();
   }
 
@@ -186,6 +223,11 @@ export class ProjectFilterComponent implements OnChanges {
       // Replace spaces with underscores for a clean filename
       const stageSafe = this.selectedStage.replace(/\s+/g, '_');
       baseFileName += `_${stageSafe}`;
+    }
+
+    if (this.filterByUser && this.selectedUser?.trim() !== '') {
+      const userSafe = this.selectedUser.replace(/\s+/g, '_');
+      baseFileName += `_${userSafe}`;
     }
 
     this.excelFileName = `${baseFileName}.xlsx`;
