@@ -59,18 +59,31 @@ export class ProjectFilterComponent implements OnChanges {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ onlyActiveUsers: true }), // ✅ get only active ones
+          body: JSON.stringify({ onlyActiveUsers: false }),
         }
       );
 
-      if (response.ok) {
-        this.users = await response.json();
-      } else {
+      if (!response.ok) {
         this.isUsersError = true;
+        return;
       }
+
+      const allUsers: User[] = await response.json();
+
+      if (!this.reports || this.reports.length === 0) {
+        this.users = [];
+        return;
+      }
+
+      const userIdsWhoReported = new Set(
+        this.reports
+          .filter(r => r.project_id === this.projectId)
+          .map(r => Number(r.user_id))
+      );
+      this.users = allUsers.filter(u => userIdsWhoReported.has(Number(u.id)));
+      this.users.sort((a, b) => `${a.fname} ${a.lname}`.localeCompare(`${b.fname} ${b.lname}`));
     } catch (e) {
       this.isUsersError = true;
-      console.error('Error fetching users: ', e);
     }
   }
 
