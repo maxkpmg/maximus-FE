@@ -47,19 +47,17 @@ export class ProjectFilterComponent implements OnChanges {
     this.toDate = this.today;
     this.generateFileName();
     if (changes['projectId'] && this.projectId) {
-      this.fetchStages();
-      this.fetchUsers();
+      await this.fetchStages();
+      await this.fetchUsers();
     }
   }
 
   async fetchUsers() {
     try {
-      const response = await fetch(
-        'https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-users',
-        {
+      const response = await fetch('https://maximus-time-reports-apc6eggvf0c0gbaf.westeurope-01.azurewebsites.net/get-users', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ onlyActiveUsers: false }),
+          body: JSON.stringify({ onlyActiveUsers: false })
         }
       );
 
@@ -74,16 +72,13 @@ export class ProjectFilterComponent implements OnChanges {
         this.users = [];
         return;
       }
-
-      const userIdsWhoReported = new Set(
-        this.reports
-          .filter(r => r.project_id === this.projectId)
-          .map(r => Number(r.user_id))
-      );
-      this.users = allUsers.filter(u => userIdsWhoReported.has(Number(u.id)));
+      const userIdsInReports = new Set(this.reports.map(r => Number(r.user_id)));
+      this.users = allUsers.filter(u => userIdsInReports.has(Number(u.id)));
       this.users.sort((a, b) => `${a.fname} ${a.lname}`.localeCompare(`${b.fname} ${b.lname}`));
+
     } catch (e) {
       this.isUsersError = true;
+      console.error('Error fetching users: ', e);
     }
   }
 
