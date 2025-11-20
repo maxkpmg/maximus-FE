@@ -76,24 +76,46 @@ export class UserDailyReportsEditorComponent implements OnInit, AfterViewInit {
       const allProjects = [...this.bookmarkedProjects];
       await this.fetchJobTypesForProjects(allProjects.map(p => p.id));
 
-      this.projectsModel = this.bookmarkedProjects.map((project) => {
-        const matchingReport = this.data.reports.find(r => r.project_id === project.id);
-        return matchingReport ? {
-          id: matchingReport.id,
-          projectId: project.id,
-          hours: String(matchingReport.hours),
-          minutes: String(matchingReport.minutes),
-          jobType: matchingReport.jobType || '',
-          description: matchingReport.description
-        } : {
-          id: 0,
-          projectId: project.id,
-          hours: '',
-          minutes: '',
-          jobType: '',
-          description: ''
-        };
-      });
+      this.projectsModel = [];
+      const usedReports: Set<string> = new Set(); // can change to string if needed
+
+      for (const project of this.bookmarkedProjects) {
+        // keep track of how many times we've used this project
+        let projectReportCount = 0;
+
+        for (const report of this.data.reports) {
+          if (report.project_id === project.id) {
+            // generate a unique key per report
+            const reportKey = `${report.project_id}-${projectReportCount}`;
+            if (!usedReports.has(reportKey)) {
+              usedReports.add(reportKey);
+
+              this.projectsModel.push({
+                id: 0, // optional: if your frontend needs unique id, you can use report.id or reportKey
+                projectId: project.id,
+                hours: String(report.hours || ''),
+                minutes: String(report.minutes || ''),
+                jobType: report.jobType || '',
+                description: report.description || ''
+              });
+
+              projectReportCount++;
+            }
+          }
+        }
+
+        // if no report mapped, add empty row
+        if (projectReportCount === 0) {
+          this.projectsModel.push({
+            id: 0,
+            projectId: project.id,
+            hours: '',
+            minutes: '',
+            jobType: '',
+            description: ''
+          });
+        }
+      }
 
       this.isLoading = false;
     } catch (e) {
