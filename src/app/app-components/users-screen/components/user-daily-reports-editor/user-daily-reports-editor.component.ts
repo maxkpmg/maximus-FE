@@ -182,10 +182,7 @@ async fetchJobTypesForProjects(projectIds: number[]): Promise<void> {
       });
       if (response.ok) {
         const data: Project[] = await response.json();
-        data.forEach(project => {
-          const existsInBookmarks = this.bookmarkedProjects.some(bookmarked => bookmarked.id === project.id);
-          if (!existsInBookmarks) this.projects.push(project);
-        });
+        this.projects = data;
         this.filteredProjects = [...this.projects];
         this.isProjectsListLoading = this.isProjectsListError = false;
         this.projectsFetched = true;
